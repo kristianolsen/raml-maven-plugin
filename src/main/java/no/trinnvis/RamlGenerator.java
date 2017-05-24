@@ -64,14 +64,14 @@ public class RamlGenerator {
 
     private void handleTypes(final List<TypeDeclaration> types) {
         types.forEach(t -> {
-            addToTypeMap(t, "no.trinnvis.dabih.api2");
+            addToTypeMap(t, "no.trinnvis.dabih.api");
         });
 
         types.forEach(t -> {
             System.out.println("" + t.displayName().value());
 
             try {
-                writeModelType(t, "no.trinnvis.dabih.api2");
+                writeModelType(t, "no.trinnvis.dabih.api");
             } catch (IOException e) {
                 e.printStackTrace();
             }
