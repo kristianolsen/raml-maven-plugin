@@ -10,6 +10,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import java.beans.ConstructorProperties;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -31,9 +32,11 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 public class RamlGenerator {
 
+    private final File output;
     private Map<String, ClassName> types = new HashMap<>();
 
-    RamlGenerator() {
+    RamlGenerator(final File output) {
+        this.output = output;
         types.put("uuid", ClassName.get(UUID.class));
         types.put("string", ClassName.get(String.class));
         types.put("date-only", ClassName.get(LocalDate.class));
@@ -172,7 +175,7 @@ public class RamlGenerator {
             .skipJavaLangImports(true)
             .build();
 
-        javaFile.writeTo(Paths.get("src/main/java"));
+        javaFile.writeTo(Paths.get(output.getAbsolutePath(),"src/main/java"));
     }
 
     private TypeName findClass(String type, TypeDeclaration p) {

@@ -22,7 +22,7 @@ public class GenerateMojo extends AbstractMojo
      */
     @Parameter(name = "output",
         property = "swagger.codegen.maven.plugin.output",
-        defaultValue = "${project.build.directory}/generated-sources/swagger")
+        defaultValue = "${project.build.directory}/generated-sources/raml")
     private File output;
 
     /**
@@ -36,7 +36,7 @@ public class GenerateMojo extends AbstractMojo
     {
         getLog().info( "Generate API model from raml definition" );
 
-        RamlGenerator generator = new RamlGenerator();
+        RamlGenerator generator = new RamlGenerator(output);
         generator.execute();
 
         final String sourceFolder =  "src/main/java";
