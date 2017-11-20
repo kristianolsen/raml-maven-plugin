@@ -3,6 +3,7 @@ package no.trinnvis;
 import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -28,12 +29,15 @@ import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 public class RamlGenerator {
 
     private final File output;
+    private final String destinationPackage = "no.trinnvis.dabih.api";
     private Map<String, ClassName> types = new HashMap<>();
+    private Map<String, StringTypeDeclaration> enums = new HashMap<>();
 
     RamlGenerator(final File output) {
         this.output = output;
@@ -59,21 +63,90 @@ public class RamlGenerator {
 
             api.uses().forEach(l -> handleTypes(l.types()));
 
+
+            writeEnums();
+
         }
+    }
+
+    private void writeEnums() {
+        enums.forEach((k, v) -> {
+            try {
+                writeEnum(k, v);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void writeEnum(final String name, final StringTypeDeclaration declaration) throws IOException {
+
+        TypeSpec.Builder builder = TypeSpec.enumBuilder(name)
+            .addJavadoc("The $L enum.", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, declaration.name()).replaceAll("_", " "))
+            .addModifiers(Modifier.PUBLIC);
+
+        if (declaration.description() != null) {
+
+            builder.addJavadoc(declaration.description().value());
+        }
+
+        declaration.enumValues().forEach(builder::addEnumConstant);
+
+
+
+        CodeBlock block = CodeBlock.builder()
+            .beginControlFlow("if (string == null || string.isEmpty())")
+            .addStatement("return null")
+            .nextControlFlow("else")
+            .addStatement("return " + name + ".valueOf(string)")
+            .endControlFlow()
+            .build();
+
+
+        MethodSpec ofMethod = MethodSpec.methodBuilder("of")
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+            .addParameter(String.class, "string")
+            //.addJavadoc("Creates a new $L.\n\n", t.name() + "Builder")
+            //.addJavadoc("@returns the new $L", t.name() + "Builder")
+            .returns(ClassName.get(destinationPackage, name))
+            .addCode(block)
+            .build();
+
+        MethodSpec toStringMethod = MethodSpec.methodBuilder("toString")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override.class)
+            .returns(String.class)
+            .addStatement("return this.name()")
+            .build();
+
+        TypeSpec spec = builder
+            .addMethod(ofMethod)
+            .addMethod(toStringMethod)
+            .addAnnotation(AnnotationSpec.builder(Generated.class).addMember("value", "$S", "Generated from RAML").build())
+            .build();
+
+        JavaFile javaFile = JavaFile.builder(destinationPackage, spec)
+            .skipJavaLangImports(true)
+            .build();
+
+        javaFile.writeTo(Paths.get(output.getAbsolutePath(),"src/main/java"));
+
     }
 
     private void handleTypes(final List<TypeDeclaration> types) {
         types.forEach(t -> {
-            addToTypeMap(t, "no.trinnvis.dabih.api");
+            addToTypeMap(t, destinationPackage);
         });
 
         types.forEach(t -> {
-            System.out.println("" + t.displayName().value());
 
-            try {
-                writeModelType(t, "no.trinnvis.dabih.api");
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (!"uuid".equals(t.displayName().value())) {
+                System.out.println("" + t.displayName().value());
+                try {
+                    writeModelType(t, destinationPackage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -111,6 +184,9 @@ public class RamlGenerator {
             ObjectTypeDeclaration object = (ObjectTypeDeclaration) t;
 
             object.properties().forEach(p -> {
+
+
+
 
                 TypeName type = findClass(p.type(), p);
 
@@ -179,6 +255,27 @@ public class RamlGenerator {
     }
 
     private TypeName findClass(String type, TypeDeclaration p) {
+
+        if (p instanceof StringTypeDeclaration) {
+            StringTypeDeclaration stringTypeDeclaration = (StringTypeDeclaration) p;
+            if (!stringTypeDeclaration.enumValues().isEmpty()) {
+                System.out.println(p.name() + " is enum " + ((StringTypeDeclaration) p).enumValues());
+
+                String name = capitalize(p.name()) + "Enum";
+
+                if (!enums.containsKey(name)) {
+                    System.out.println(name + " is defined");
+                    enums.put(name, stringTypeDeclaration);
+
+                }
+
+                return ClassName.get(destinationPackage, name);
+
+            }
+        }
+
+
+
         if (types.containsKey(type)) {
             return types.get(type);
 
@@ -199,7 +296,8 @@ public class RamlGenerator {
 
     private void addGetMethod(TypeSpec.Builder builder, TypeDeclaration p, TypeName type) {
 
-        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("get" + capitalize(p.name()))
+        String prefix = type.equals(ClassName.get(Boolean.class)) ? "is" : "get";
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(prefix + capitalize(p.name()))
             .returns(type)
             .addModifiers(Modifier.PUBLIC)
             .addStatement("return this." + p.name());
