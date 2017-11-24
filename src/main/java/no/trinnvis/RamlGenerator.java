@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -334,6 +335,12 @@ public class RamlGenerator {
     private void addBuilderField(TypeSpec.Builder builder, TypeDeclaration p, TypeName type) {
         FieldSpec.Builder fieldBuilder = FieldSpec.builder(type, p.name())
             .addModifiers(Modifier.PRIVATE);
+
+        if (p.type().equals("array")) {
+            fieldBuilder
+                .initializer("new $T<>()", HashSet.class);
+        }
+
 
         FieldSpec field = fieldBuilder
             .build();
