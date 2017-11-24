@@ -1,5 +1,7 @@
 package no.trinnvis;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.common.base.CaseFormat;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -10,7 +12,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import java.beans.ConstructorProperties;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -20,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
 import org.raml.v2.api.RamlModelBuilder;
@@ -63,7 +63,6 @@ public class RamlGenerator {
 
             api.uses().forEach(l -> handleTypes(l.types()));
 
-
             writeEnums();
 
         }
@@ -92,8 +91,6 @@ public class RamlGenerator {
 
         declaration.enumValues().forEach(builder::addEnumConstant);
 
-
-
         CodeBlock block = CodeBlock.builder()
             .beginControlFlow("if (string == null || string.isEmpty())")
             .addStatement("return null")
@@ -101,7 +98,6 @@ public class RamlGenerator {
             .addStatement("return " + name + ".valueOf(string)")
             .endControlFlow()
             .build();
-
 
         MethodSpec ofMethod = MethodSpec.methodBuilder("of")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -129,7 +125,7 @@ public class RamlGenerator {
             .skipJavaLangImports(true)
             .build();
 
-        javaFile.writeTo(Paths.get(output.getAbsolutePath(),"src/main/java"));
+        javaFile.writeTo(Paths.get(output.getAbsolutePath(), "src/main/java"));
 
     }
 
@@ -140,7 +136,7 @@ public class RamlGenerator {
 
         types.forEach(t -> {
 
-            if (!"uuid".equals(t.displayName().value())) {
+            if (!"uuid" .equals(t.displayName().value())) {
                 System.out.println("" + t.displayName().value());
                 try {
                     writeModelType(t, destinationPackage);
@@ -174,8 +170,9 @@ public class RamlGenerator {
         }
 
         MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
-            .addModifiers(Modifier.PUBLIC)
-            .addJavadoc("Public constructor required by Jackson. Use builder in code.");
+            .addModifiers(Modifier.PRIVATE);
+
+        constructorBuilder.addParameter(ClassName.get(packageName, t.name(), t.name() + "Builder"), "builder");
 
         List<String> constructorParameterNames = new ArrayList<>();
 
@@ -184,9 +181,6 @@ public class RamlGenerator {
             ObjectTypeDeclaration object = (ObjectTypeDeclaration) t;
 
             object.properties().forEach(p -> {
-
-
-
 
                 TypeName type = findClass(p.type(), p);
 
@@ -202,34 +196,29 @@ public class RamlGenerator {
                 addBuilderMethod(builderBuilder, p, type, builderType, t.name());
 
                 constructorBuilder
-                    .addParameter(type, p.name())
-                    .addJavadoc("@param $L the $L property\n", p.name(), p.name())
-                    .addStatement("this.$N = $N", p.name(), p.name());
+                    .addStatement("$N = builder.$N", p.name(), p.name());
             });
 
         }
 
         MethodSpec buildMethod = MethodSpec.methodBuilder("build")
-
             .addModifiers(Modifier.PUBLIC)
             .addJavadoc("Creates a new $L with all configuration options that have been specified by calling methods on this builder.\n", t.name())
             .addJavadoc("@returns the new $L", t.name())
             .returns(ClassName.get(packageName, t.name()))
-            .addStatement("return new " + t.name() + "(" + constructorParameterNames.stream().collect(Collectors.joining(", ")) + ")")
-
+            .addStatement("return new " + t.name() + "(this)")
             .build();
 
         builderBuilder.addMethod(buildMethod);
 
-        String result = constructorParameterNames.stream()
-            .map((s) -> "\"" + s + "\"")
-            .collect(Collectors.joining(", "));
-
-        final AnnotationSpec annotationSpec = AnnotationSpec.builder(ConstructorProperties.class)
-            .addMember("value", "{" + result + "}")
+        final AnnotationSpec annotationSpec = AnnotationSpec.builder(JsonPOJOBuilder.class)
+            .addMember("withPrefix", "$S", "")
             .build();
-        MethodSpec constructor = constructorBuilder
-            .addAnnotation(annotationSpec)
+
+        builderBuilder.addAnnotation(annotationSpec);
+
+        final AnnotationSpec annotationSpecForClass = AnnotationSpec.builder(JsonDeserialize.class)
+            .addMember("builder", "$L.$L.class", t.name(), t.name() + "Builder")
             .build();
 
         MethodSpec builderMethod = MethodSpec.methodBuilder("builder")
@@ -241,7 +230,8 @@ public class RamlGenerator {
             .build();
 
         TypeSpec spec = builder
-            .addMethod(constructor)
+            .addAnnotation(annotationSpecForClass)
+            .addMethod(constructorBuilder.build())
             .addMethod(builderMethod)
             .addType(builderBuilder.build())
             .addAnnotation(AnnotationSpec.builder(Generated.class).addMember("value", "$S", "Generated from RAML").build())
@@ -251,7 +241,7 @@ public class RamlGenerator {
             .skipJavaLangImports(true)
             .build();
 
-        javaFile.writeTo(Paths.get(output.getAbsolutePath(),"src/main/java"));
+        javaFile.writeTo(Paths.get(output.getAbsolutePath(), "src/main/java"));
     }
 
     private TypeName findClass(String type, TypeDeclaration p) {
@@ -274,14 +264,12 @@ public class RamlGenerator {
             }
         }
 
-
-
         if (types.containsKey(type)) {
             return types.get(type);
 
         }
 
-        if ("array".equals(type)) {
+        if ("array" .equals(type)) {
             ArrayTypeDeclaration declaration = (ArrayTypeDeclaration) p;
             TypeName itemType = findClass(declaration.items().type(), declaration.items());
             ClassName set = ClassName.get("java.util", "Set");
@@ -290,8 +278,9 @@ public class RamlGenerator {
 
         throw new IllegalArgumentException(type);
     }
+
     private String capitalize(String input) {
-        return input.substring(0,  1).toUpperCase() + input.substring(1);
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 
     private void addGetMethod(TypeSpec.Builder builder, TypeDeclaration p, TypeName type) {
@@ -315,9 +304,9 @@ public class RamlGenerator {
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(p.name())
             .returns(builderType)
             .addModifiers(Modifier.PUBLIC)
-            .addJavadoc( "Sets the $L property for the new $L.\n", p.name(), name)
-            .addJavadoc( "@param $L the $L\n", p.name(), p.name())
-            .addJavadoc( "@returns a reference to this $T", builderType)
+            .addJavadoc("Sets the $L property for the new $L.\n", p.name(), name)
+            .addJavadoc("@param $L the $L\n", p.name(), p.name())
+            .addJavadoc("@returns a reference to this $T", builderType)
             .addParameter(type, p.name(), Modifier.FINAL)
             .addStatement("this." + p.name() + "=" + p.name())
             .addStatement("return this");
