@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,6 +47,8 @@ public class RamlGenerator {
         types.put("uuid", ClassName.get(UUID.class));
         types.put("string", ClassName.get(String.class));
         types.put("date-only", ClassName.get(LocalDate.class));
+        types.put("datetime-only", ClassName.get(LocalDateTime.class));
+        types.put("datetime", ClassName.get(ZonedDateTime.class));
         types.put("integer", ClassName.get(Integer.class));
         types.put("boolean", ClassName.get(Boolean.class));
     }
@@ -339,10 +343,18 @@ public class RamlGenerator {
         if (p.type().equals("array")) {
             fieldBuilder
                 .initializer("new $T<>()", HashSet.class);
+        } else if (p instanceof StringTypeDeclaration) {
+            StringTypeDeclaration stringTypeDeclaration = (StringTypeDeclaration) p;
+            if (!stringTypeDeclaration.enumValues().isEmpty()) {
+
+                if (stringTypeDeclaration.defaultValue() != null) {
+                    fieldBuilder
+                        .initializer("$T.$L", type, stringTypeDeclaration.defaultValue());
+                }
+            }
         }
 
-
-        FieldSpec field = fieldBuilder
+                FieldSpec field = fieldBuilder
             .build();
 
         builder.addField(field);
