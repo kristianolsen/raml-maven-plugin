@@ -2,11 +2,55 @@ openapi: 3.0.0
 info:
   title: dabih-api
   version: 1.0-SNAPSHOT
+  description: This is the REST api for the DABIH service by TrinnVis.
+security:
+  - UserSecurity: []
 servers:
   - url: 'https://app-api.trinnvis.no/'
+tags:
+  - name: accounts
+    description: >-
+      Operations for user to create or log in and to fetch information about
+      organizations
+  - name: issues-app
+    description: Operations for used by the issues app
+  - name: ticks
+    description: Operations for scheduled tasks
+  - name: tokens
+    description: Operations for api access by third party applications
+  - name: organizations
+    description: Operations for top level access to organization
+  - name: computers
+    description: Operations for organization computers
+  - name: constitutionalDocuments
+    description: Operations for organization constitutional documents
+  - name: contracts
+    description: Operations for organization contracts
+  - name: documents
+    description: Operations for organization documents
+  - name: employees
+    description: Operations for organization employees
+  - name: functions
+    description: Operations for organization functions
+  - name: guidelines
+    description: Operations for organization guidelines
+  - name: partners
+    description: Operations for organization partners
+  - name: reports
+    description: Operations for organization reports
+  - name: qualityReviews
+    description: Operations for organization qualityReviews
+  - name: riskAssessments
+    description: Operations for organization riskAssessments
+  - name: assets
+    description: Operations for organization assets
+  - name: issues
+    description: Operations for organization issues
 paths:
   /accounts:
     post:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -16,11 +60,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AccountCreateMessage'
         required: true
   /accounts/index:
     post:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -28,6 +73,8 @@ paths:
       operationId: resource_AccountsResource_postIndex_POST
   /accounts/login:
     get:
+      tags:
+        - accounts
       responses:
         '200':
           description: Success
@@ -53,13 +100,14 @@ paths:
             type: string
   /accounts/search:
     get:
+      tags:
+        - accounts
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AccountEmployeeViewModel'
@@ -73,6 +121,8 @@ paths:
             type: string
   /accounts/status:
     get:
+      tags:
+        - accounts
       responses:
         '200':
           description: Success
@@ -84,6 +134,8 @@ paths:
       operationId: resource_AccountsResource_status_GET
   /accounts/token:
     get:
+      tags:
+        - accounts
       responses:
         '200':
           description: Success
@@ -99,6 +151,8 @@ paths:
             type: string
   /accounts/update-template:
     post:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -106,6 +160,8 @@ paths:
       operationId: resource_AccountsResource_postUpdateTemplate_POST
   '/accounts/{accountEmailOrId}':
     get:
+      tags:
+        - accounts
       responses:
         '200':
           description: Success
@@ -118,6 +174,8 @@ paths:
         access to.
       operationId: resource_AccountsResource_get_GET
     put:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -127,7 +185,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AccountUpdateMessage'
         required: true
     parameters:
@@ -141,6 +198,8 @@ paths:
           id of the current users account.
   '/accounts/{accountEmailOrId}/organizations':
     get:
+      tags:
+        - accounts
       responses:
         '200':
           description: Success
@@ -163,6 +222,8 @@ paths:
           id of the current users account.
   '/accounts/{accountId}':
     delete:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -183,6 +244,8 @@ paths:
         description: account id
   '/accounts/{accountId}/status':
     put:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -192,7 +255,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AccountStatusUpdateMessage'
         required: true
     parameters:
@@ -202,18 +264,20 @@ paths:
         schema:
           type: string
         description: account id
-  '/accounts/{accountId}/transfer':
+  '/accounts/{accountId}/user':
     post:
+      tags:
+        - accounts
+      security: []
       responses:
         default:
           description: ''
-      operationId: resource_AccountsResource_transfer_POST
+      operationId: resource_AccountsResource_user_POST
       requestBody:
         content:
           application/json:
             schema:
-              title: body
-              $ref: '#/components/schemas/TransferMessage'
+              $ref: '#/components/schemas/UserCreateMessage'
         required: true
     parameters:
       - name: accountId
@@ -224,6 +288,8 @@ paths:
         description: account id
   '/accounts/{accountId}/invoice':
     post:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -232,7 +298,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/InvoiceMessage'
         required: true
     parameters:
@@ -244,6 +309,8 @@ paths:
         description: account id
   '/accounts/{accountEmail}/accountStatus':
     get:
+      tags:
+        - accounts
       responses:
         '200':
           description: Success
@@ -262,6 +329,9 @@ paths:
         description: The account email
   '/accounts/{userEmail}/passwordRequest':
     post:
+      tags:
+        - accounts
+      security: []
       responses:
         '200':
           description: Success
@@ -283,6 +353,8 @@ paths:
           Request new user password
   /accounts/feedback:
     post:
+      tags:
+        - accounts
       responses:
         default:
           description: ''
@@ -292,11 +364,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/FeedbackMessage'
         required: true
   /issues:
     put:
+      tags:
+        - issues-app
       responses:
         default:
           description: ''
@@ -306,7 +379,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/IssuesRequest'
         required: true
       parameters:
@@ -316,6 +388,9 @@ paths:
             type: string
   /issues/passwordRequest:
     post:
+      tags:
+        - issues-app
+      security: []
       responses:
         '200':
           description: Success
@@ -329,11 +404,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/PasswordRequest'
         required: true
   /issues/organizations:
     get:
+      tags:
+        - issues-app
       responses:
         '200':
           description: Success
@@ -352,6 +428,8 @@ paths:
             type: string
   /ticks/renewals:
     post:
+      tags:
+        - ticks
       responses:
         default:
           description: ''
@@ -360,11 +438,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ScheduledTimeMessage'
         required: true
   /ticks/reschedule:
     post:
+      tags:
+        - ticks
       responses:
         default:
           description: ''
@@ -374,11 +453,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ScheduledTimeMessage'
         required: true
   /ticks/summaries:
     post:
+      tags:
+        - ticks
       responses:
         default:
           description: ''
@@ -388,11 +468,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ScheduledTimeMessage'
         required: true
-  /ticks/transfer-users:
+  /ticks/update-mail-chimp:
     post:
+      tags:
+        - ticks
       responses:
         default:
           description: ''
@@ -408,11 +489,54 @@ paths:
         content:
           application/json:
             schema:
-              title: body
+              $ref: '#/components/schemas/ScheduledTimeMessage'
+        required: true
+  /ticks/index-admin-search:
+    post:
+      tags:
+        - ticks
+      responses:
+        default:
+          description: ''
+      description: |
+        This endpoint is used to copy users from the old system so they
+
+        can log in using the new syste in order to upgrade
+
+
+        Only old accounts with email ending in @mailinator.
+      operationId: resource_TicksResource_transferUsers_POST
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduledTimeMessage'
+        required: true
+  /ticks/status:
+    post:
+      tags:
+        - ticks
+      responses:
+        default:
+          description: ''
+      description: |
+        This endpoint is used to copy users from the old system so they
+
+        can log in using the new syste in order to upgrade
+
+
+        Only old accounts with email ending in @mailinator.
+      operationId: resource_TicksResource_transferUsers_POST
+      requestBody:
+        content:
+          application/json:
+            schema:
               $ref: '#/components/schemas/ScheduledTimeMessage'
         required: true
   /ticks/reminders:
     post:
+      tags:
+        - ticks
       responses:
         default:
           description: ''
@@ -422,11 +546,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ScheduledTimeMessage'
         required: true
   /organizations:
     post:
+      tags:
+        - organizations
       responses:
         default:
           description: ''
@@ -436,11 +561,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/OrganizationCreateMessage'
         required: true
   '/organizations/{organizationId}':
     get:
+      tags:
+        - organizations
       responses:
         '200':
           description: Success
@@ -451,6 +577,8 @@ paths:
       description: Get organization for specified organization id.
       operationId: resource_OrganizationResource_get_GET
     put:
+      tags:
+        - organizations
       responses:
         default:
           description: ''
@@ -460,7 +588,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/OrganizationUpdateMessage'
         required: true
     parameters:
@@ -470,15 +597,36 @@ paths:
         schema:
           type: string
         description: The organization id
-  '/organizations/{organizationId}/computers':
+  '/viewer/{path+}':
     get:
+      tags:
+        - organizations
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
+                $ref: '#/components/schemas/OrganizationViewModel'
+      description: Proxy for the accusoft file viewer backend.
+      operationId: resource_ViewerResource_get_GET
+    parameters:
+      - name: organizationId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The organization id
+  '/organizations/{organizationId}/computers':
+    get:
+      tags:
+        - computers
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/ComputerViewModel'
@@ -493,13 +641,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/computers/{entityId}/attachments':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -520,6 +669,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/computers/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -532,7 +683,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -562,6 +712,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/computers/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -572,6 +724,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationComputerResource_getAttachment_GET
     delete:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -598,6 +752,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/computers/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -628,6 +784,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/computers/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -637,7 +795,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -661,6 +818,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/computers/{computerId}':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -671,6 +830,8 @@ paths:
       description: Get the computer with the specified computer id.
       operationId: resource_OrganizationComputerResource_getComputerViewModel_GET
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -682,10 +843,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ComputerUpdateMessage'
         required: true
     delete:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -708,13 +870,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments':
     get:
+      tags:
+        - constitutionalDocuments
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/ConstitutionalDocumentViewModel'
@@ -730,13 +893,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments/{entityId}/attachments':
     get:
+      tags:
+        - constitutionalDocuments
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -757,6 +921,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - constitutionalDocuments
       responses:
         default:
           description: ''
@@ -769,7 +935,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -799,6 +964,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - constitutionalDocuments
       responses:
         '200':
           description: Success
@@ -809,6 +976,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationConstitutionalDocumentResource_getAttachment_GET
     delete:
+      tags:
+        - constitutionalDocuments
       responses:
         default:
           description: ''
@@ -836,6 +1005,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - constitutionalDocuments
       responses:
         '200':
           description: Success
@@ -867,6 +1038,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - constitutionalDocuments
       responses:
         default:
           description: ''
@@ -876,7 +1049,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -900,6 +1072,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments/{constitutionalDocumentId}':
     get:
+      tags:
+        - constitutionalDocuments
       responses:
         '200':
           description: Success
@@ -913,6 +1087,8 @@ paths:
       operationId: >-
         resource_OrganizationConstitutionalDocumentResource_getConstitutionalDocumentViewModel_GET
     put:
+      tags:
+        - constitutionalDocuments
       responses:
         default:
           description: ''
@@ -929,10 +1105,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ConstitutionalDocumentUpdateMessage'
         required: true
     delete:
+      tags:
+        - constitutionalDocuments
       responses:
         default:
           description: ''
@@ -955,13 +1132,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/constitutionalDocuments/{constitutionalDocumentId}/revisions':
     get:
+      tags:
+        - constitutionalDocuments
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RevisionViewModel'
@@ -981,13 +1159,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts':
     get:
+      tags:
+        - contracts
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/ContractViewModel'
@@ -1002,13 +1181,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts/{entityId}/attachments':
     get:
+      tags:
+        - contracts
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -1029,6 +1209,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - contracts
       responses:
         default:
           description: ''
@@ -1041,7 +1223,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -1071,6 +1252,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - contracts
       responses:
         '200':
           description: Success
@@ -1081,6 +1264,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationContractResource_getAttachment_GET
     delete:
+      tags:
+        - contracts
       responses:
         default:
           description: ''
@@ -1107,6 +1292,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - contracts
       responses:
         '200':
           description: Success
@@ -1137,6 +1324,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - contracts
       responses:
         default:
           description: ''
@@ -1146,7 +1335,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -1170,6 +1358,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts/{contractId}':
     get:
+      tags:
+        - contracts
       responses:
         '200':
           description: Success
@@ -1180,6 +1370,8 @@ paths:
       description: Get the contract with the specified contract id.
       operationId: resource_OrganizationContractResource_getContractViewModel_GET
     put:
+      tags:
+        - contracts
       responses:
         default:
           description: ''
@@ -1195,10 +1387,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ContractUpdateMessage'
         required: true
     delete:
+      tags:
+        - contracts
       responses:
         default:
           description: ''
@@ -1221,13 +1414,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/contracts/{contractId}/revisions':
     get:
+      tags:
+        - contracts
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RevisionViewModel'
@@ -1247,13 +1441,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents':
     get:
+      tags:
+        - documents
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/DocumentViewModel'
@@ -1268,13 +1463,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents/{entityId}/attachments':
     get:
+      tags:
+        - documents
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -1295,6 +1491,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - documents
       responses:
         default:
           description: ''
@@ -1307,7 +1505,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -1337,6 +1534,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - documents
       responses:
         '200':
           description: Success
@@ -1347,6 +1546,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationDocumentResource_getAttachment_GET
     delete:
+      tags:
+        - documents
       responses:
         default:
           description: ''
@@ -1373,6 +1574,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - documents
       responses:
         '200':
           description: Success
@@ -1403,6 +1606,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - documents
       responses:
         default:
           description: ''
@@ -1412,7 +1617,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -1436,6 +1640,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents/{documentId}':
     get:
+      tags:
+        - documents
       responses:
         '200':
           description: Success
@@ -1446,6 +1652,8 @@ paths:
       description: Get the document with the specified document id.
       operationId: resource_OrganizationDocumentResource_getDocumentViewModel_GET
     put:
+      tags:
+        - documents
       responses:
         default:
           description: ''
@@ -1457,10 +1665,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/DocumentUpdateMessage'
         required: true
     delete:
+      tags:
+        - documents
       responses:
         default:
           description: ''
@@ -1483,13 +1692,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/documents/{documentId}/revisions':
     get:
+      tags:
+        - documents
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RevisionViewModel'
@@ -1509,13 +1719,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/employees':
     get:
+      tags:
+        - employees
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/EmployeeViewModel'
@@ -1530,13 +1741,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/employees/{entityId}/attachments':
     get:
+      tags:
+        - employees
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -1557,6 +1769,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/employees/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - employees
       responses:
         default:
           description: ''
@@ -1569,7 +1783,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -1599,6 +1812,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/employees/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - employees
       responses:
         '200':
           description: Success
@@ -1609,6 +1824,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationEmployeeResource_getAttachment_GET
     delete:
+      tags:
+        - employees
       responses:
         default:
           description: ''
@@ -1635,6 +1852,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/employees/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - employees
       responses:
         '200':
           description: Success
@@ -1665,6 +1884,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/employees/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - employees
       responses:
         default:
           description: ''
@@ -1674,7 +1895,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -1698,6 +1918,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/employees/{employeeId}':
     get:
+      tags:
+        - employees
       responses:
         '200':
           description: Success
@@ -1708,6 +1930,8 @@ paths:
       description: Get employee for specified employee id within specified organization.
       operationId: resource_OrganizationEmployeeResource_getEmployeeViewModel_GET
     put:
+      tags:
+        - employees
       responses:
         default:
           description: ''
@@ -1719,10 +1943,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/EmployeeUpdateMessage'
         required: true
     delete:
+      tags:
+        - employees
       responses:
         default:
           description: ''
@@ -1743,13 +1968,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/externalConnections':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/ExternalConnectionViewModel'
@@ -1765,13 +1991,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/externalConnections/{entityId}/attachments':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -1792,6 +2019,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/externalConnections/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -1804,7 +2033,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -1834,6 +2062,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/externalConnections/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -1844,6 +2074,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationExternalConnectionResource_getAttachment_GET
     delete:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -1870,6 +2102,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/externalConnections/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -1900,6 +2134,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/externalConnections/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -1909,7 +2145,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -1933,6 +2168,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/externalConnections/{externalConnectionId}':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -1944,6 +2181,8 @@ paths:
       operationId: >-
         resource_OrganizationExternalConnectionResource_getExternalConnectionViewModel_GET
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -1956,10 +2195,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ExternalConnectionUpdateMessage'
         required: true
     delete:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -1982,13 +2222,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/FunctionViewModel'
@@ -2005,6 +2246,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
@@ -2017,6 +2260,8 @@ paths:
         pages and tasks also have been included in the function.
       operationId: resource_OrganizationFunctionResource_getFunctionViewModel_GET
     put:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2032,10 +2277,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/FunctionUpdateMessage'
         required: true
     delete:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2058,13 +2304,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/TaskViewModel'
@@ -2085,13 +2332,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{entityId}/attachments':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -2118,6 +2366,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2130,7 +2380,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -2166,6 +2415,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
@@ -2176,6 +2427,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationFunctionTaskResource_getAttachment_GET
     delete:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2208,6 +2461,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
@@ -2244,6 +2499,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2253,7 +2510,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -2283,6 +2539,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{taskId}':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
@@ -2293,6 +2551,8 @@ paths:
       description: Get the task with the specified task id.
       operationId: resource_OrganizationFunctionTaskResource_getTaskViewModel_GET
     put:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2307,10 +2567,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/FunctionTaskUpdateMessage'
         required: true
     delete:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2339,13 +2600,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{taskId}/revisions':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RevisionViewModel'
@@ -2371,6 +2633,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/tasks/{taskId}/done':
     post:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2396,13 +2660,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{functionId}/revisions':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RevisionViewModel'
@@ -2422,13 +2687,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{entityId}/attachments':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -2449,6 +2715,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2461,7 +2729,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -2491,6 +2758,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
@@ -2501,6 +2770,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationFunctionResource_getAttachment_GET
     delete:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2527,6 +2798,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - functions
       responses:
         '200':
           description: Success
@@ -2557,6 +2830,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2566,7 +2841,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -2590,6 +2864,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/functions/postpone-tasks':
     post:
+      tags:
+        - functions
       responses:
         default:
           description: ''
@@ -2604,13 +2880,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines':
     get:
+      tags:
+        - guidelines
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/GuidelineViewModel'
@@ -2625,13 +2902,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines/{entityId}/attachments':
     get:
+      tags:
+        - guidelines
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -2652,6 +2930,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - guidelines
       responses:
         default:
           description: ''
@@ -2664,7 +2944,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -2694,6 +2973,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - guidelines
       responses:
         '200':
           description: Success
@@ -2704,6 +2985,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationGuidelineResource_getAttachment_GET
     delete:
+      tags:
+        - guidelines
       responses:
         default:
           description: ''
@@ -2730,6 +3013,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - guidelines
       responses:
         '200':
           description: Success
@@ -2760,6 +3045,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - guidelines
       responses:
         default:
           description: ''
@@ -2769,7 +3056,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -2793,6 +3079,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines/{guidelineId}':
     get:
+      tags:
+        - guidelines
       responses:
         '200':
           description: Success
@@ -2803,6 +3091,8 @@ paths:
       description: Get the guideline with the specified guideline id.
       operationId: resource_OrganizationGuidelineResource_getGuidelineViewModel_GET
     put:
+      tags:
+        - guidelines
       responses:
         default:
           description: ''
@@ -2814,10 +3104,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/GuidelineUpdateMessage'
         required: true
     delete:
+      tags:
+        - guidelines
       responses:
         default:
           description: ''
@@ -2840,13 +3131,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/guidelines/{guidelineId}/revisions':
     get:
+      tags:
+        - guidelines
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RevisionViewModel'
@@ -2866,13 +3158,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues':
     get:
+      tags:
+        - issues
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/IssueViewModel'
@@ -2887,13 +3180,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues/{entityId}/attachments':
     get:
+      tags:
+        - issues
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -2914,6 +3208,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - issues
       responses:
         default:
           description: ''
@@ -2926,7 +3222,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -2956,6 +3251,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - issues
       responses:
         '200':
           description: Success
@@ -2966,6 +3263,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationIssueResource_getAttachment_GET
     delete:
+      tags:
+        - issues
       responses:
         default:
           description: ''
@@ -2992,6 +3291,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - issues
       responses:
         '200':
           description: Success
@@ -3022,6 +3323,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - issues
       responses:
         default:
           description: ''
@@ -3031,7 +3334,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -3055,6 +3357,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues/{issueId}':
     get:
+      tags:
+        - issues
       responses:
         '200':
           description: Success
@@ -3065,6 +3369,8 @@ paths:
       description: Get the issue with the specified issue id.
       operationId: resource_OrganizationIssueResource_getIssueViewModel_GET
     put:
+      tags:
+        - issues
       responses:
         default:
           description: ''
@@ -3074,10 +3380,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/IssueUpdateMessage'
         required: true
     delete:
+      tags:
+        - issues
       responses:
         default:
           description: ''
@@ -3100,6 +3407,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/issues/{issueId}/simple':
     put:
+      tags:
+        - issues
       responses:
         default:
           description: ''
@@ -3109,7 +3418,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/IssueSimpleUpdateMessage'
         required: true
     parameters:
@@ -3127,13 +3435,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/networks':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/NetworkViewModel'
@@ -3148,13 +3457,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/networks/{entityId}/attachments':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -3175,6 +3485,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/networks/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -3187,7 +3499,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -3217,6 +3528,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/networks/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -3227,6 +3540,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationNetworkResource_getAttachment_GET
     delete:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -3253,6 +3568,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/networks/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -3283,6 +3600,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/networks/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -3292,7 +3611,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -3316,6 +3634,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/networks/{networkId}':
     get:
+      tags:
+        - computers
       responses:
         '200':
           description: Success
@@ -3326,6 +3646,8 @@ paths:
       description: Get the network with the specified network id.
       operationId: resource_OrganizationNetworkResource_getIssueViewModel_GET
     put:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -3335,10 +3657,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/NetworkUpdateMessage'
         required: true
     delete:
+      tags:
+        - computers
       responses:
         default:
           description: ''
@@ -3359,13 +3682,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/pages':
     get:
+      tags:
+        - organizations
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/PageViewModel'
@@ -3380,13 +3704,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/PartnerViewModel'
@@ -3401,6 +3726,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
@@ -3411,6 +3738,8 @@ paths:
       description: Get the partner with the specified partner id.
       operationId: resource_OrganizationPartnerResource_getPartnerViewModel_GET
     put:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3422,10 +3751,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/PartnerUpdateMessage'
         required: true
     delete:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3448,13 +3778,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}/contacts':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/ContactPersonViewModel'
@@ -3476,13 +3807,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}/contacts/{entityId}/attachments':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -3509,6 +3841,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}/contacts/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3521,7 +3855,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -3557,6 +3890,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}/contacts/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
@@ -3567,6 +3902,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationPartnerContactResource_getAttachment_GET
     delete:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3599,6 +3936,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}/contacts/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
@@ -3635,6 +3974,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}/contacts/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3644,7 +3985,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -3674,6 +4014,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{partnerId}/contacts/{contactId}':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
@@ -3685,6 +4027,8 @@ paths:
       operationId: >-
         resource_OrganizationPartnerContactResource_getContactPersonViewModel_GET
     put:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3696,10 +4040,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ContactPersonUpdateMessage'
         required: true
     delete:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3728,13 +4073,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{entityId}/attachments':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -3755,6 +4101,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3767,7 +4115,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -3797,6 +4144,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
@@ -3807,6 +4156,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationPartnerResource_getAttachment_GET
     delete:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3833,6 +4184,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - partners
       responses:
         '200':
           description: Success
@@ -3863,6 +4216,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/partners/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - partners
       responses:
         default:
           description: ''
@@ -3872,7 +4227,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -3896,13 +4250,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/QualityReviewViewModel'
@@ -3917,6 +4272,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews/{qualityReviewId}':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
@@ -3927,6 +4284,8 @@ paths:
       description: Get quality review within specified organization.
       operationId: resource_OrganizationQualityReviewResource_getQualityReviewViewModel_GET
     put:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -3936,10 +4295,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/QualityUpdateMessage'
         required: true
     delete:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -3960,13 +4320,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews/{qualityReviewId}/qualityReviewMainGoals':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/QualityReviewMainGoalViewModel'
@@ -3990,6 +4351,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews/{qualityReviewId}/qualityReviewMainGoals/{qualityReviewMainGoalId}':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
@@ -4003,6 +4366,8 @@ paths:
       operationId: >-
         resource_OrganizationQualityReviewMainGoalResource_getQualityReviewViewModel_GET
     put:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -4014,10 +4379,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/QualityReviewMainGoalUpdateMessage'
         required: true
     delete:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -4046,13 +4412,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews/{qualityReviewId}/qualityReviewMainGoals/{qualityReviewMainGoalId}/qualityReviewSubGoals':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/QualityReviewSubGoalViewModel'
@@ -4082,6 +4449,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews/{qualityReviewId}/qualityReviewMainGoals/{qualityReviewMainGoalId}/qualityReviewSubGoals/{qualityReviewSubGoalId}':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
@@ -4095,6 +4464,8 @@ paths:
       operationId: >-
         resource_OrganizationQualityReviewSubGoalResource_getQualityReviewViewModel_GET
     put:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -4106,10 +4477,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/QualityReviewSubGoalUpdateMessage'
         required: true
     delete:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -4142,13 +4514,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews/{qualityReviewId}/qualityReviewMainGoals/{qualityReviewMainGoalId}/qualityReviewSubGoals/{qualityReviewSubGoalId}/qualityReviewIndicators':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/QualityReviewIndicatorViewModel'
@@ -4188,6 +4561,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/qualityReviews/{qualityReviewId}/qualityReviewMainGoals/{qualityReviewMainGoalId}/qualityReviewSubGoals/{qualityReviewSubGoalId}/qualityReviewIndicators/{qualityReviewIndicatorId}':
     get:
+      tags:
+        - qualityReviews
       responses:
         '200':
           description: Success
@@ -4205,6 +4580,8 @@ paths:
       operationId: >-
         resource_OrganizationQualityReviewIndicatorResource_getQualityReviewViewModel_GET
     put:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -4216,10 +4593,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/QualityReviewIndicatorUpdateMessage'
         required: true
     delete:
+      tags:
+        - qualityReviews
       responses:
         default:
           description: ''
@@ -4264,13 +4642,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/references':
     get:
+      tags:
+        - organizations
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/ReferenceViewModel'
@@ -4285,13 +4664,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports':
     get:
+      tags:
+        - reports
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/ReportViewModel'
@@ -4306,13 +4686,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports/{entityId}/attachments':
     get:
+      tags:
+        - reports
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -4333,6 +4714,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - reports
       responses:
         default:
           description: ''
@@ -4345,7 +4728,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -4375,6 +4757,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - reports
       responses:
         '200':
           description: Success
@@ -4385,6 +4769,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationReportResource_getAttachment_GET
     delete:
+      tags:
+        - reports
       responses:
         default:
           description: ''
@@ -4411,6 +4797,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - reports
       responses:
         '200':
           description: Success
@@ -4441,6 +4829,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - reports
       responses:
         default:
           description: ''
@@ -4450,7 +4840,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -4474,6 +4863,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports/{reportId}':
     get:
+      tags:
+        - reports
       responses:
         '200':
           description: Success
@@ -4484,6 +4875,8 @@ paths:
       description: Get the report with the specified report id.
       operationId: resource_OrganizationReportResource_getReportViewModel_GET
     put:
+      tags:
+        - reports
       responses:
         default:
           description: ''
@@ -4495,10 +4888,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/ReportUpdateMessage'
         required: true
     delete:
+      tags:
+        - reports
       responses:
         default:
           description: ''
@@ -4521,13 +4915,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/reports/{reportId}/revisions':
     get:
+      tags:
+        - reports
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RevisionViewModel'
@@ -4547,6 +4942,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/archive':
     get:
+      tags:
+        - organizations
       responses:
         '200':
           description: Success
@@ -4565,6 +4962,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/fetch':
     get:
+      tags:
+        - organizations
       responses:
         '200':
           description: Success
@@ -4582,13 +4981,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/search':
     get:
+      tags:
+        - organizations
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/SearchResultHit'
@@ -4615,6 +5015,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/settings':
     put:
+      tags:
+        - organizations
       responses:
         default:
           description: ''
@@ -4624,7 +5026,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/OrganizationSettingsUpdateMessage'
         required: true
     parameters:
@@ -4636,6 +5037,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/state':
     put:
+      tags:
+        - organizations
       responses:
         default:
           description: ''
@@ -4645,7 +5048,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AccountStateUpdateMessage'
         required: true
     parameters:
@@ -4657,6 +5059,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/messages/{message}':
     delete:
+      tags:
+        - organizations
       responses:
         default:
           description: ''
@@ -4677,13 +5081,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/riskAssessments':
     get:
+      tags:
+        - riskAssessments
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/RiskAssessmentViewModel'
@@ -4699,13 +5104,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/riskAssessments/{entityId}/attachments':
     get:
+      tags:
+        - riskAssessments
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -4726,6 +5132,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/riskAssessments/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - riskAssessments
       responses:
         default:
           description: ''
@@ -4738,7 +5146,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -4768,6 +5175,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/riskAssessments/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - riskAssessments
       responses:
         '200':
           description: Success
@@ -4778,6 +5187,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationRiskAssessmentResource_getAttachment_GET
     delete:
+      tags:
+        - riskAssessments
       responses:
         default:
           description: ''
@@ -4804,6 +5215,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/riskAssessments/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - riskAssessments
       responses:
         '200':
           description: Success
@@ -4834,6 +5247,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/riskAssessments/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - riskAssessments
       responses:
         default:
           description: ''
@@ -4843,7 +5258,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -4867,6 +5281,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/riskAssessments/{riskAssessmentId}':
     get:
+      tags:
+        - riskAssessments
       responses:
         '200':
           description: Success
@@ -4878,6 +5294,8 @@ paths:
       operationId: >-
         resource_OrganizationRiskAssessmentResource_getRiskAssessmentViewModel_GET
     put:
+      tags:
+        - riskAssessments
       responses:
         default:
           description: ''
@@ -4890,10 +5308,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/RiskAssessmentUpdateMessage'
         required: true
     delete:
+      tags:
+        - riskAssessments
       responses:
         default:
           description: ''
@@ -4916,13 +5335,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/assets':
     get:
+      tags:
+        - assets
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AssetViewModel'
@@ -4937,13 +5357,14 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/assets/{entityId}/attachments':
     get:
+      tags:
+        - assets
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/AttachmentViewModel'
@@ -4964,6 +5385,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/assets/{entityId}/attachments/{fileName}':
     put:
+      tags:
+        - assets
       responses:
         default:
           description: ''
@@ -4976,7 +5399,6 @@ paths:
               type: object
               properties:
                 body:
-                  title: body
                   description: Upload file stream
                   type: string
         required: true
@@ -5006,6 +5428,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/assets/{entityId}/attachments/{attachmentUuid}':
     get:
+      tags:
+        - assets
       responses:
         '200':
           description: Success
@@ -5016,6 +5440,8 @@ paths:
       description: Download specified attachment for specified function.
       operationId: resource_OrganizationAssetResource_getAttachment_GET
     delete:
+      tags:
+        - assets
       responses:
         default:
           description: ''
@@ -5042,6 +5468,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/assets/{entityId}/attachments/{attachmentUuid}/session':
     get:
+      tags:
+        - assets
       responses:
         '200':
           description: Success
@@ -5072,6 +5500,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/assets/{entityId}/attachments/{attachmentUuid}/properties':
     put:
+      tags:
+        - assets
       responses:
         default:
           description: ''
@@ -5081,7 +5511,6 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AttachmentPropertiesUpdateMessage'
         required: true
     parameters:
@@ -5105,6 +5534,8 @@ paths:
         description: The organization id
   '/organizations/{organizationId}/assets/{assetId}':
     get:
+      tags:
+        - assets
       responses:
         '200':
           description: Success
@@ -5115,6 +5546,8 @@ paths:
       description: Get the asset with the specified asset id.
       operationId: resource_OrganizationAssetResource_getAssetViewModel_GET
     put:
+      tags:
+        - assets
       responses:
         default:
           description: ''
@@ -5126,10 +5559,11 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/AssetsUpdateMessage'
         required: true
     delete:
+      tags:
+        - assets
       responses:
         default:
           description: ''
@@ -5152,18 +5586,21 @@ paths:
         description: The organization id
   /tokens:
     get:
+      tags:
+        - tokens
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                title: response
                 type: array
                 items:
                   $ref: '#/components/schemas/TokenViewModel'
       operationId: resource_TokensResource_get_GET
     post:
+      tags:
+        - tokens
       responses:
         '200':
           description: Success
@@ -5176,11 +5613,12 @@ paths:
         content:
           application/json:
             schema:
-              title: body
               $ref: '#/components/schemas/TokenViewModel'
         required: true
   '/tokens/{uuid}':
     delete:
+      tags:
+        - tokens
       responses:
         default:
           description: ''
@@ -5195,12 +5633,10 @@ paths:
 components:
   schemas:
     uuid:
-      title: uuid
       pattern: >-
         ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
       type: string
     AccountCreateMessage:
-      title: AccountCreateMessage
       description: >
         Extends the organization create message with email and password. Allows
         new users to create user and account. The
@@ -5209,121 +5645,87 @@ components:
       type: object
       properties:
         firstName:
-          title: firstName
           type: string
         lastName:
-          title: lastName
           type: string
         invoiceAddress:
-          title: invoiceAddress
           type: string
         invoicePostcode:
-          title: invoicePostcode
           type: string
         invoiceLocality:
-          title: invoiceLocality
           type: string
         organizationName:
-          title: organizationName
           type: string
         employeesCount:
-          title: employeesCount
           type: integer
         specialTerms:
-          title: specialTerms
           enum:
             - NONE
             - DNLF
             - NFF
           type: string
         businessEntityType:
-          title: businessEntityType
           type: string
         email:
-          title: email
           description: >-
             The email of the new user. This email is used to create a user and
             as the contact email of the new account.
           type: string
         password:
-          title: password
           description: The password of the new user.
           type: string
     AdminAccountViewModel:
-      title: AdminAccountViewModel
       type: object
       properties:
         id:
-          title: id
           type: integer
         contactEmail:
-          title: contactEmail
           type: string
         contactName:
-          title: contactName
           type: string
         invoiceOrganization:
-          title: invoiceOrganization
           type: string
         organizationName:
-          title: organizationName
           type: string
         invitedBy:
-          title: invitedBy
           type: string
         invoiceAddress:
-          title: invoiceAddress
           type: string
         closed:
-          title: closed
           type: boolean
         pending:
-          title: pending
           type: boolean
         upgraded:
-          title: upgraded
           type: boolean
         specialTerms:
-          title: specialTerms
           enum:
             - NONE
             - DNLF
             - NFF
           type: string
         createdDate:
-          title: createdDate
           type: string
         expires:
-          title: expires
           type: string
           format: date
         amount:
-          title: amount
           type: integer
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AccountEmployeeViewModel'
         invoiceLink:
-          title: invoiceLink
           type: string
     AccountEmployeeViewModel:
-      title: AccountEmployeeViewModel
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         firstName:
-          title: firstName
           type: string
         lastName:
-          title: lastName
           type: string
         accessLevel:
-          title: accessLevel
           enum:
             - NONE
             - READONLY
@@ -5332,60 +5734,44 @@ components:
             - LEADER
           type: string
         associationType:
-          title: associationType
           type: string
         email:
-          title: email
           type: string
         phone:
-          title: phone
           type: string
         profession:
-          title: profession
           type: string
         status:
-          title: status
           enum:
             - ACTIVE
             - LEAVE
             - TERMINATED
           type: string
     AccountLoginViewModel:
-      title: AccountLoginViewModel
       type: object
       properties:
         location:
-          title: location
           type: string
     AccountStateEmployeeViewModel:
-      title: AccountStateEmployeeViewModel
       type: object
       properties:
         firstName:
-          title: firstName
           type: string
         lastName:
-          title: lastName
           type: string
         associationType:
-          title: associationType
           type: string
         profession:
-          title: profession
           type: string
         email:
-          title: email
           type: string
         accessLevel:
-          title: accessLevel
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
       required:
         - uuid
     AccountStateUpdateMessage:
-      title: AccountStateUpdateMessage
       description: >
         The AccountStateUpdateMessage is exactly the same as the account state
         view model. It is used as a memento
@@ -5396,49 +5782,34 @@ components:
       type: object
       properties:
         page:
-          title: page
           type: integer
         pending:
-          title: pending
           type: boolean
         businessEntityType:
-          title: businessEntityType
           type: string
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AccountStateEmployeeViewModel'
         activityCodes:
-          title: activityCodes
           type: array
           items:
-            title: items
             type: string
         leaderFunction:
-          title: leaderFunction
           $ref: '#/components/schemas/uuid'
         healthSafetyAndEnvironmentalFunction:
-          title: healthSafetyAndEnvironmentalFunction
           $ref: '#/components/schemas/uuid'
         assetFunction:
-          title: assetFunction
           $ref: '#/components/schemas/uuid'
         computerFunction:
-          title: computerFunction
           $ref: '#/components/schemas/uuid'
         economicsFunction:
-          title: economicsFunction
           $ref: '#/components/schemas/uuid'
         qualityManagerFunction:
-          title: qualityManagerFunction
           $ref: '#/components/schemas/uuid'
         professionalDevelopmentFunction:
-          title: professionalDevelopmentFunction
           $ref: '#/components/schemas/uuid'
         humanResourcesFunction:
-          title: humanResourcesFunction
           $ref: '#/components/schemas/uuid'
       required:
         - employees
@@ -5451,53 +5822,37 @@ components:
         - professionalDevelopmentFunction
         - humanResourcesFunction
     AccountStateViewModel:
-      title: AccountStateViewModel
       type: object
       properties:
         page:
-          title: page
           type: integer
         pending:
-          title: pending
           type: boolean
         businessEntityType:
-          title: businessEntityType
           type: string
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AccountStateEmployeeViewModel'
         activityCodes:
-          title: activityCodes
           type: array
           items:
-            title: items
             type: string
         leaderFunction:
-          title: leaderFunction
           $ref: '#/components/schemas/uuid'
         healthSafetyAndEnvironmentalFunction:
-          title: healthSafetyAndEnvironmentalFunction
           $ref: '#/components/schemas/uuid'
         assetFunction:
-          title: assetFunction
           $ref: '#/components/schemas/uuid'
         computerFunction:
-          title: computerFunction
           $ref: '#/components/schemas/uuid'
         economicsFunction:
-          title: economicsFunction
           $ref: '#/components/schemas/uuid'
         qualityManagerFunction:
-          title: qualityManagerFunction
           $ref: '#/components/schemas/uuid'
         professionalDevelopmentFunction:
-          title: professionalDevelopmentFunction
           $ref: '#/components/schemas/uuid'
         humanResourcesFunction:
-          title: humanResourcesFunction
           $ref: '#/components/schemas/uuid'
       required:
         - employees
@@ -5510,495 +5865,344 @@ components:
         - professionalDevelopmentFunction
         - humanResourcesFunction
     AccountStatusUpdateMessage:
-      title: AccountStatusUpdateMessage
       type: object
       properties:
         closed:
-          title: closed
           type: boolean
         expires:
-          title: expires
           type: string
           format: date
     AccountStatusViewModel:
-      title: AccountStatusViewModel
       type: object
       properties:
         openAccountsCount:
-          title: openAccountsCount
           type: integer
         closedAccountsCount:
-          title: closedAccountsCount
           type: integer
         amount:
-          title: amount
           type: integer
         monthlyInvoicingOverview:
-          title: monthlyInvoicingOverview
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/MonthlyInvoicingOverview'
     MonthlyInvoicingOverview:
-      title: MonthlyInvoicingOverview
       type: object
       properties:
         year:
-          title: year
           type: integer
         month:
-          title: month
           type: integer
         description:
-          title: description
           type: string
         count:
-          title: count
           type: integer
         amount:
-          title: amount
           type: integer
     AccountUpdateMessage:
-      title: AccountUpdateMessage
       type: object
       properties:
         password:
-          title: password
           type: string
         organizationIdForSummaries:
-          title: organizationIdForSummaries
           type: integer
         summaries:
-          title: summaries
           enum:
             - NONE
             - ALL
             - SCHEDULED
           type: string
+        receiveReminders:
+          enum:
+            - NONE
+            - SMS
+          type: string
+          description: Set to NONE to turn off all notifications using SMS.
         email:
-          title: email
           type: string
     AccountViewModel:
-      title: AccountViewModel
       type: object
       properties:
         href:
-          title: href
           type: string
         organizations:
-          title: organizations
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/OrganizationReference'
     OrganizationReference:
-      title: OrganizationReference
       type: object
       properties:
         name:
-          title: name
           type: string
         ownerEmail:
-          title: ownerEmail
           type: string
         expires:
-          title: expires
           type: string
           format: date
         pending:
-          title: pending
           type: boolean
         closed:
-          title: closed
           type: boolean
         readonly:
-          title: readonly
           type: boolean
         href:
-          title: href
           type: string
         message:
-          title: message
           type: string
         id:
-          title: id
           type: integer
         state:
-          title: state
           $ref: '#/components/schemas/AccountStateViewModel'
     UpgradableOrganizationViewModel:
-      title: UpgradableOrganizationViewModel
       type: object
       properties:
         canUpgrade:
-          title: canUpgrade
           type: boolean
         href:
-          title: href
           type: string
         expires:
-          title: expires
           type: string
           format: date
         ownerEmail:
-          title: ownerEmail
           type: string
         readonly:
-          title: readonly
           type: boolean
         name:
-          title: name
           type: string
         id:
-          title: id
           type: integer
     ArchiveViewModel:
-      title: ArchiveViewModel
       type: object
       properties:
         assets:
-          title: assets
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AssetViewModel'
         computers:
-          title: computers
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ComputerViewModel'
         constitutionalDocuments:
-          title: constitutionalDocuments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ConstitutionalDocumentViewModel'
         contacts:
-          title: contacts
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ContactPersonViewModel'
         contracts:
-          title: contracts
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ContractViewModel'
         documents:
-          title: documents
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/DocumentViewModel'
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/EmployeeViewModel'
         externalConnections:
-          title: externalConnections
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ExternalConnectionViewModel'
         functions:
-          title: functions
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/FunctionViewModel'
         guidelines:
-          title: guidelines
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/GuidelineViewModel'
         issues:
-          title: issues
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/IssueViewModel'
         networks:
-          title: networks
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/NetworkViewModel'
         partners:
-          title: partners
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/PartnerViewModel'
         qualityReviews:
-          title: qualityReviews
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewViewModel'
         qualityReviewIndicators:
-          title: qualityReviewIndicators
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewIndicatorViewModel'
         qualityReviewMainGoals:
-          title: qualityReviewMainGoals
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewMainGoalViewModel'
         qualityReviewSubGoals:
-          title: qualityReviewSubGoals
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewSubGoalViewModel'
         reports:
-          title: reports
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ReportViewModel'
         riskAssessments:
-          title: riskAssessments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/RiskAssessmentViewModel'
         tasks:
-          title: tasks
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/TaskViewModel'
     AssetViewModel:
-      title: AssetViewModel
       type: object
       properties:
         name:
-          title: name
           type: string
         number:
-          title: number
           type: string
         category:
-          title: category
           type: string
         owner:
-          title: owner
           type: string
         manufacturer:
-          title: manufacturer
           type: string
         model:
-          title: model
           type: string
         location:
-          title: location
           type: string
         userManual:
-          title: userManual
           type: string
         supplier:
-          title: supplier
           type: string
         acquiredYear:
-          title: acquiredYear
           type: string
         discardedYear:
-          title: discardedYear
           type: string
         accessory:
-          title: accessory
           type: string
         competency:
-          title: competency
           type: string
         maintenance:
-          title: maintenance
           type: string
         maintenanceInterval:
-          title: maintenanceInterval
           type: string
         lastMaintenanceResultOk:
-          title: lastMaintenanceResultOk
           type: string
         complianceDeclaration:
-          title: complianceDeclaration
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         requiresElectricity:
-          title: requiresElectricity
           type: boolean
         storesSensitiveInformation:
-          title: storesSensitiveInformation
           type: boolean
         maintenanceRequired:
-          title: maintenanceRequired
           type: boolean
         assetVerified:
-          title: assetVerified
           type: boolean
         documentationVerified:
-          title: documentationVerified
           type: boolean
         documented:
-          title: documented
           type: boolean
         lastMaintenanceComment:
-          title: lastMaintenanceComment
           type: boolean
         lastMaintenanceDate:
-          title: lastMaintenanceDate
           type: string
           format: date
         deleted:
-          title: deleted
           type: boolean
         tasks:
-          title: tasks
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     AttachmentViewModel:
-      title: AttachmentViewModel
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         fullPath:
-          title: fullPath
           type: string
         name:
-          title: name
           type: string
         viewingSessionId:
-          title: viewingSessionId
           type: string
         url:
-          title: url
           type: string
     ComputerViewModel:
-      title: ComputerViewModel
       type: object
       properties:
         notes:
-          title: notes
           type: string
         name:
-          title: name
           type: string
         location:
-          title: location
           type: string
         type:
-          title: type
           type: string
         journalType:
-          title: journalType
           type: string
         journalSupplier:
-          title: journalSupplier
           type: string
         journalSize:
-          title: journalSize
           type: string
         messagingType:
-          title: messagingType
           type: string
         messagingSupplier:
-          title: messagingSupplier
           type: string
         localPrinter:
-          title: localPrinter
           type: string
         antivirus:
-          title: antivirus
           type: boolean
         laptop:
-          title: laptop
           type: boolean
         storesPersonalInformation:
-          title: storesPersonalInformation
           type: boolean
         storesJournal:
-          title: storesJournal
           type: boolean
         journalRegistered:
-          title: journalRegistered
           type: boolean
         journalHasElectronicMessaging:
-          title: journalHasElectronicMessaging
           type: boolean
         messageMonitoring:
-          title: messageMonitoring
           type: boolean
         autoLookupPatients:
-          title: autoLookupPatients
           type: boolean
         autoLookupAddress:
-          title: autoLookupAddress
           type: boolean
         autoLookupAddressNhn:
-          title: autoLookupAddressNhn
           type: boolean
         autoUpdateAddressNhn:
-          title: autoUpdateAddressNhn
           type: boolean
         deleted:
-          title: deleted
           type: boolean
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         networkUuid:
-          title: networkUuid
           $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     ConstitutionalDocumentViewModel:
-      title: ConstitutionalDocumentViewModel
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         templateId:
-          title: templateId
           type: string
         template:
-          title: template
           type: string
         name:
-          title: name
           type: string
         content:
-          title: content
           type: string
         helpContent:
-          title: helpContent
           type: string
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -6006,70 +6210,49 @@ components:
             - PRIVATE
           type: string
         validFromDate:
-          title: validFromDate
           type: string
           format: date
         validToDate:
-          title: validToDate
           type: string
           format: date
         deleted:
-          title: deleted
           type: boolean
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         partners:
-          title: partners
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     ContactPersonViewModel:
-      title: ContactPersonViewModel
       type: object
       properties:
         notes:
-          title: notes
           type: string
         email:
-          title: email
           type: string
         lastName:
-          title: lastName
           type: string
         firstName:
-          title: firstName
           type: string
         telephone:
-          title: telephone
           type: string
         mobilePhone:
-          title: mobilePhone
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         partner:
-          title: partner
           $ref: '#/components/schemas/uuid'
         accessLevel:
-          title: accessLevel
           enum:
             - NONE
             - READONLY
@@ -6078,56 +6261,39 @@ components:
             - LEADER
           type: string
         deleted:
-          title: deleted
           type: boolean
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     ContractViewModel:
-      title: ContractViewModel
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         templateId:
-          title: templateId
           type: string
         templateEmployeeId:
-          title: templateEmployeeId
           type: string
         documentLocation:
-          title: documentLocation
           type: string
         category:
-          title: category
           type: string
         name:
-          title: name
           type: string
         sideCode:
-          title: sideCode
           type: string
         status:
-          title: status
           type: string
         content:
-          title: content
           type: string
         affiliation:
-          title: affiliation
           type: string
         profession:
-          title: profession
           type: string
         helpContent:
-          title: helpContent
           type: string
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -6135,84 +6301,59 @@ components:
             - PRIVATE
           type: string
         validFromDate:
-          title: validFromDate
           type: string
           format: date
         validToDate:
-          title: validToDate
           type: string
           format: date
         required:
-          title: required
           type: boolean
         relationsLocked:
-          title: relationsLocked
           type: boolean
         deleted:
-          title: deleted
           type: boolean
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         partners:
-          title: partners
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     DocumentViewModel:
-      title: DocumentViewModel
       type: object
       properties:
         validFromDate:
-          title: validFromDate
           type: string
           format: date
         validToDate:
-          title: validToDate
           type: string
           format: date
         category:
-          title: category
           type: string
         template:
-          title: template
           type: string
         name:
-          title: name
           type: string
         status:
-          title: status
           type: string
         content:
-          title: content
           type: string
         type:
-          title: type
           type: string
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -6220,119 +6361,81 @@ components:
             - PRIVATE
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         helpContent:
-          title: helpContent
           type: string
         deleted:
-          title: deleted
           type: boolean
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     EmployeeViewModel:
-      title: EmployeeViewModel
       type: object
       properties:
         postcode1:
-          title: postcode1
           type: string
         postcode2:
-          title: postcode2
           type: string
         email:
-          title: email
           type: string
         phone:
-          title: phone
           type: string
         secondaryPhone:
-          title: secondaryPhone
           type: string
         associationType:
-          title: associationType
           type: string
         profession:
-          title: profession
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         address:
-          title: address
           type: string
         address2:
-          title: address2
           type: string
         notes:
-          title: notes
           type: string
         lastName:
-          title: lastName
           type: string
         firstName:
-          title: firstName
           type: string
         group:
-          title: group
           type: boolean
         herNumber:
-          title: herNumber
           type: string
         hprNumber:
-          title: hprNumber
           type: string
         expertise:
-          title: expertise
           type: string
         deletable:
-          title: deletable
           type: boolean
         deleted:
-          title: deleted
           type: boolean
         issues:
-          title: issues
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         riskAssessment:
-          title: riskAssessment
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         externalConnections:
-          title: externalConnections
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         qualitySubGoalsResponsible:
-          title: qualitySubGoalsResponsible
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         accessLevel:
-          title: accessLevel
           enum:
             - NONE
             - READONLY
@@ -6341,84 +6444,68 @@ components:
             - LEADER
           type: string
         speciality:
-          title: speciality
           type: string
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
         status:
-          title: status
           enum:
             - ACTIVE
             - LEAVE
             - TERMINATED
           type: string
         summaries:
-          title: summaries
           enum:
             - NONE
             - ALL
             - SCHEDULED
           type: string
+        receiveReminders:
+          enum:
+            - NONE
+            - SMS
+          type: string
+          description: Set to NONE to turn off all notifications using SMS.
     ExternalConnectionViewModel:
-      title: ExternalConnectionViewModel
       type: object
       properties:
         name:
-          title: name
           type: string
         type:
-          title: type
           type: string
         connectionType:
-          title: connectionType
           enum:
             - NONE
             - NHN
             - OTHER
           type: string
         description:
-          title: description
           type: string
         deleted:
-          title: deleted
           type: boolean
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         employeeUuid:
-          title: employeeUuid
           $ref: '#/components/schemas/uuid'
         partnerUuid:
-          title: partnerUuid
           $ref: '#/components/schemas/uuid'
         networkUuid:
-          title: networkUuid
           $ref: '#/components/schemas/uuid'
         supplierUuid:
-          title: supplierUuid
           $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     FunctionViewModel:
-      title: FunctionViewModel
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         responsibility:
-          title: responsibility
           type: string
         type:
-          title: type
           enum:
             - SINGLE
             - ROTATED
@@ -6426,100 +6513,69 @@ components:
             - COMMON
           type: string
         description:
-          title: description
           type: string
         rotation:
-          title: rotation
           type: string
         name:
-          title: name
           type: string
         status:
-          title: status
           type: string
         category:
-          title: category
           type: string
         template:
-          title: template
           type: string
         helpContent:
-          title: helpContent
           type: string
         responsibilityLocked:
-          title: responsibilityLocked
           type: boolean
         deleted:
-          title: deleted
           type: boolean
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         rotations:
-          title: rotations
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/FunctionRotationViewModel'
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         tasks:
-          title: tasks
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/TaskViewModel'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     FunctionRotationViewModel:
-      title: FunctionRotationViewModel
       type: object
       properties:
         employee:
-          title: employee
           $ref: '#/components/schemas/uuid'
         day1:
-          title: day1
           type: integer
         day2:
-          title: day2
           type: integer
         day3:
-          title: day3
           type: integer
         day4:
-          title: day4
           type: integer
         day5:
-          title: day5
           type: integer
         day6:
-          title: day6
           type: integer
         day7:
-          title: day7
           type: integer
         startDate:
-          title: startDate
           type: string
           format: date
     TaskViewModel:
-      title: TaskViewModel
       type: object
       properties:
         reminder:
-          title: reminder
           enum:
             - NONE
             - AT_START
@@ -6529,93 +6585,64 @@ components:
             - FIVE_HOURS_BEFORE
           type: string
         type:
-          title: type
           type: string
         situation:
-          title: situation
           type: string
         procedures:
-          title: procedures
           type: string
         name:
-          title: name
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         function:
-          title: function
           $ref: '#/components/schemas/uuid'
         asset:
-          title: asset
           $ref: '#/components/schemas/uuid'
         employee:
-          title: employee
           $ref: '#/components/schemas/uuid'
         rrule:
-          title: rrule
           type: string
         helpContent:
-          title: helpContent
           type: string
         deleted:
-          title: deleted
           type: boolean
         locked:
-          title: locked
           type: boolean
         lastExecuted:
-          title: lastExecuted
           type: string
           format: date
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     GuidelineViewModel:
-      title: GuidelineViewModel
       type: object
       properties:
         category:
-          title: category
           type: string
         template:
-          title: template
           type: string
         name:
-          title: name
           type: string
         status:
-          title: status
           type: string
         content:
-          title: content
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         helpContent:
-          title: helpContent
           type: string
         deleted:
-          title: deleted
           type: boolean
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -6623,360 +6650,247 @@ components:
             - PRIVATE
           type: string
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     IssueViewModel:
-      title: IssueViewModel
       type: object
       properties:
         notes:
-          title: notes
           type: string
         description:
-          title: description
           type: string
         identifiedMeasures:
-          title: identifiedMeasures
           type: string
         shallEvaluated:
-          title: shallEvaluated
           type: boolean
         immediateMeasures:
-          title: immediateMeasures
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         furtherMeasures:
-          title: furtherMeasures
           type: string
         name:
-          title: name
           type: string
         correction:
-          title: correction
           type: string
         registeredBy:
-          title: registeredBy
           $ref: '#/components/schemas/uuid'
         reportedTo:
-          title: reportedTo
           $ref: '#/components/schemas/uuid'
         reportedBy:
-          title: reportedBy
           $ref: '#/components/schemas/uuid'
         responsibleBy:
-          title: responsibleBy
           $ref: '#/components/schemas/uuid'
         processedBy:
-          title: processedBy
           $ref: '#/components/schemas/uuid'
         evaluatedBy:
-          title: evaluatedBy
           $ref: '#/components/schemas/uuid'
         processedDate:
-          title: processedDate
           type: string
           format: date
         reportedDate:
-          title: reportedDate
           type: string
           format: date
         evaluatedDate:
-          title: evaluatedDate
           type: string
           format: date
         eventDate:
-          title: eventDate
           type: string
           format: date
         registeredDate:
-          title: registeredDate
           type: string
           format: date
         evaluated:
-          title: evaluated
           type: boolean
         implementedMeasure:
-          title: implementedMeasure
           type: boolean
         reportedLabourInspection:
-          title: reportedLabourInspection
           type: boolean
         reportedInspectorate:
-          title: reportedInspectorate
           type: boolean
         reportedSafetyManager:
-          title: reportedSafetyManager
           type: boolean
         reportedCountyMedical:
-          title: reportedCountyMedical
           type: boolean
         deleted:
-          title: deleted
           type: boolean
         informationLeakagePossibility:
-          title: informationLeakagePossibility
           type: boolean
         personDamagePossibility:
-          title: personDamagePossibility
           type: boolean
         relateToEmployees:
-          title: relateToEmployees
           type: boolean
         relateToEquipment:
-          title: relateToEquipment
           type: boolean
         relateToPatient:
-          title: relateToPatient
           type: boolean
         relateToPatientInstitution:
-          title: relateToPatientInstitution
           type: boolean
         relateToRadiation:
-          title: relateToRadiation
           type: boolean
         requiresMeasures:
-          title: requiresMeasures
           type: boolean
         requireEvaluation:
-          title: requireEvaluation
           type: boolean
         measuresSatisfactorily:
-          title: measuresSatisfactorily
           type: boolean
         evaluatedOk:
-          title: evaluatedOk
           type: boolean
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     NetworkViewModel:
-      title: NetworkViewModel
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         name:
-          title: name
           type: string
         nhnDescription:
-          title: nhnDescription
           type: string
         otherDescription:
-          title: otherDescription
           type: string
         connectionType:
-          title: connectionType
           type: string
         supplierUuid:
-          title: supplierUuid
           $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
         deleted:
-          title: deleted
           type: boolean
     PartnerViewModel:
-      title: PartnerViewModel
       type: object
       properties:
         email:
-          title: email
           type: string
         url:
-          title: url
           type: string
         notes:
-          title: notes
           type: string
         industry:
-          title: industry
           type: string
         name:
-          title: name
           type: string
         address:
-          title: address
           type: string
         phone:
-          title: phone
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         deleted:
-          title: deleted
           type: boolean
         remoteAccess:
-          title: remoteAccess
           type: boolean
         physicalAccess:
-          title: physicalAccess
           type: boolean
         pageAccess:
-          title: pageAccess
           type: boolean
         deletable:
-          title: deletable
           type: boolean
         helpContent:
-          title: helpContent
           type: string
         externalConnections:
-          title: externalConnections
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         contacts:
-          title: contacts
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ContactPersonViewModel'
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     QualityReviewViewModel:
-      title: QualityReviewViewModel
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         name:
-          title: name
           type: string
         mainGoals:
-          title: mainGoals
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewMainGoalViewModel'
         deleted:
-          title: deleted
           type: boolean
     QualityReviewMainGoalViewModel:
-      title: QualityReviewMainGoalViewModel
       type: object
       properties:
         description:
-          title: description
           type: string
         name:
-          title: name
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         subGoals:
-          title: subGoals
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewSubGoalViewModel'
         deleted:
-          title: deleted
           type: boolean
     QualityReviewSubGoalViewModel:
-      title: QualityReviewSubGoalViewModel
       type: object
       properties:
         name:
-          title: name
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         responsibleBy:
-          title: responsibleBy
           $ref: '#/components/schemas/uuid'
         indicators:
-          title: indicators
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewIndicatorViewModel'
         deleted:
-          title: deleted
           type: boolean
     QualityReviewIndicatorViewModel:
-      title: QualityReviewIndicatorViewModel
       type: object
       properties:
         name:
-          title: name
           type: string
         assessment:
-          title: assessment
           type: string
         assessmentDate:
-          title: assessmentDate
           type: string
+          format: local-date-time
         approved:
-          title: approved
           type: boolean
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
     ReportViewModel:
-      title: ReportViewModel
       type: object
       properties:
         name:
-          title: name
           type: string
         content:
-          title: content
           type: string
         reportDate:
-          title: reportDate
           type: string
           format: date
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         employeeUuid:
-          title: employeeUuid
           $ref: '#/components/schemas/uuid'
         helpContent:
-          title: helpContent
           type: string
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -6984,461 +6898,314 @@ components:
             - PRIVATE
           type: string
         deleted:
-          title: deleted
           type: boolean
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     RiskAssessmentViewModel:
-      title: RiskAssessmentViewModel
       type: object
       properties:
         probability:
-          title: probability
           type: integer
         consequence:
-          title: consequence
           type: integer
         description:
-          title: description
           type: string
         riskDescription:
-          title: riskDescription
           type: string
         name:
-          title: name
           type: string
         measures:
-          title: measures
           type: string
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         helpContent:
-          title: helpContent
           type: string
         assessmentDate:
-          title: assessmentDate
           type: string
           format: date
         violatesInformationSecurityRequirements:
-          title: violatesInformationSecurityRequirements
           type: boolean
         violatesIntegrityRequirement:
-          title: violatesIntegrityRequirement
           type: boolean
         violatesConfidentialityRequirement:
-          title: violatesConfidentialityRequirement
           type: boolean
         violatesNonRepudiationRequirement:
-          title: violatesNonRepudiationRequirement
           type: boolean
         violatesAvailabilityRequirement:
-          title: violatesAvailabilityRequirement
           type: boolean
         deleted:
-          title: deleted
           type: boolean
         responsibleBy:
-          title: responsibleBy
           $ref: '#/components/schemas/uuid'
         determinedBy:
-          title: determinedBy
           $ref: '#/components/schemas/uuid'
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         attachments:
-          title: attachments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AttachmentViewModel'
     AssetsUpdateMessage:
-      title: AssetsUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         number:
-          title: number
           type: string
         category:
-          title: category
           type: string
         owner:
-          title: owner
           type: string
         manufacturer:
-          title: manufacturer
           type: string
         model:
-          title: model
           type: string
         location:
-          title: location
           type: string
         userManual:
-          title: userManual
           type: string
         supplier:
-          title: supplier
           type: string
         acquiredYear:
-          title: acquiredYear
           type: string
         discardedYear:
-          title: discardedYear
           type: string
         accessory:
-          title: accessory
           type: string
         competency:
-          title: competency
           type: string
         maintenance:
-          title: maintenance
           type: string
         maintenanceInterval:
-          title: maintenanceInterval
           type: string
         complianceDeclaration:
-          title: complianceDeclaration
           type: string
         requiresElectricity:
-          title: requiresElectricity
           type: boolean
         storesSensitiveInformation:
-          title: storesSensitiveInformation
           type: boolean
         maintenanceRequired:
-          title: maintenanceRequired
           type: boolean
         assetVerified:
-          title: assetVerified
           type: boolean
         documentationVerified:
-          title: documentationVerified
           type: boolean
         documented:
-          title: documented
           type: boolean
     AttachmentPropertiesUpdateMessage:
-      title: AttachmentPropertiesUpdateMessage
       description: Update the name of the attachment.
       type: object
       properties:
         name:
-          title: name
           type: string
       required:
         - name
     CompleteOrganizationViewModel:
-      title: CompleteOrganizationViewModel
       type: object
       properties:
         organizationId:
-          title: organizationId
           type: integer
         href:
-          title: href
           type: string
         address:
-          title: address
           type: string
         notes:
-          title: notes
           type: string
         officeAddress:
-          title: officeAddress
           type: string
         officePostcode:
-          title: officePostcode
           type: string
         email:
-          title: email
           type: string
         herNumber:
-          title: herNumber
           type: string
         name:
-          title: name
           type: string
         businessEntityType:
-          title: businessEntityType
           type: string
         organizationNumber:
-          title: organizationNumber
           type: string
         mailAddress:
-          title: mailAddress
           type: string
         mailPostcode:
-          title: mailPostcode
           type: string
         fax:
-          title: fax
           type: string
         phone:
-          title: phone
           type: string
         type:
-          title: type
           type: string
         url:
-          title: url
           type: string
         invoiceReceiver:
-          title: invoiceReceiver
           type: string
         invoicePostcode:
-          title: invoicePostcode
           type: string
         invoiceLocality:
-          title: invoiceLocality
           type: string
         reference:
-          title: reference
           type: string
         invoiceAddress:
-          title: invoiceAddress
           type: string
         ownerEmail:
-          title: ownerEmail
           type: string
         settingsHref:
-          title: settingsHref
           type: string
         activityCodes:
-          title: activityCodes
           type: array
           items:
-            title: items
             type: string
         specialTerms:
-          title: specialTerms
           enum:
             - NONE
             - DNLF
             - NFF
           type: string
         functions:
-          title: functions
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/FunctionViewModel'
         issues:
-          title: issues
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/IssueViewModel'
         partners:
-          title: partners
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/PartnerViewModel'
         constitutionalDocuments:
-          title: constitutionalDocuments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ConstitutionalDocumentViewModel'
         computers:
-          title: computers
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ComputerViewModel'
         contracts:
-          title: contracts
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ContractViewModel'
         guidelines:
-          title: guidelines
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/GuidelineViewModel'
         networks:
-          title: networks
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/NetworkViewModel'
         documents:
-          title: documents
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/DocumentViewModel'
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/EmployeeViewModel'
         externalConnections:
-          title: externalConnections
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ExternalConnectionViewModel'
         qualityReviews:
-          title: qualityReviews
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/QualityReviewViewModel'
         riskAssessments:
-          title: riskAssessments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/RiskAssessmentViewModel'
         reports:
-          title: reports
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/ReportViewModel'
         assets:
-          title: assets
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/AssetViewModel'
     ComputerUpdateMessage:
-      title: ComputerUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         notes:
-          title: notes
           type: string
         location:
-          title: location
           type: string
         type:
-          title: type
           type: string
         journalType:
-          title: journalType
           type: string
         journalSupplier:
-          title: journalSupplier
           type: string
         journalSize:
-          title: journalSize
           type: string
         messagingType:
-          title: messagingType
           type: string
         messagingSupplier:
-          title: messagingSupplier
           type: string
         localPrinter:
-          title: localPrinter
           type: string
         antivirus:
-          title: antivirus
           type: boolean
         laptop:
-          title: laptop
           type: boolean
         storesPersonalInformation:
-          title: storesPersonalInformation
           type: boolean
         storesJournal:
-          title: storesJournal
           type: boolean
         journalRegistered:
-          title: journalRegistered
           type: boolean
         journalHasElectronicMessaging:
-          title: journalHasElectronicMessaging
           type: boolean
         messageMonitoring:
-          title: messageMonitoring
           type: boolean
         autoLookupPatients:
-          title: autoLookupPatients
           type: boolean
         autoLookupAddress:
-          title: autoLookupAddress
           type: boolean
         autoLookupAddressNhn:
-          title: autoLookupAddressNhn
           type: boolean
         autoUpdateAddressNhn:
-          title: autoUpdateAddressNhn
           type: boolean
         networkUuid:
-          title: networkUuid
           $ref: '#/components/schemas/uuid'
     ConstitutionalDocumentUpdateMessage:
-      title: ConstitutionalDocumentUpdateMessage
       type: object
       properties:
         templateId:
-          title: templateId
           type: string
         template:
-          title: template
           type: string
         name:
-          title: name
           type: string
         content:
-          title: content
           type: string
         validFromDate:
-          title: validFromDate
           type: string
           format: date
         validToDate:
-          title: validToDate
           type: string
           format: date
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         partners:
-          title: partners
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -7446,35 +7213,25 @@ components:
             - PRIVATE
           type: string
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
     ContactPersonUpdateMessage:
-      title: ContactPersonUpdateMessage
       type: object
       properties:
         notes:
-          title: notes
           type: string
         email:
-          title: email
           type: string
         lastName:
-          title: lastName
           type: string
         firstName:
-          title: firstName
           type: string
         telephone:
-          title: telephone
           type: string
         mobilePhone:
-          title: mobilePhone
           type: string
         accessLevel:
-          title: accessLevel
           enum:
             - NONE
             - READONLY
@@ -7485,59 +7242,41 @@ components:
       required:
         - accessLevel
     ContractUpdateMessage:
-      title: ContractUpdateMessage
       type: object
       properties:
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         partners:
-          title: partners
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         templateId:
-          title: templateId
           type: string
         templateEmployeeId:
-          title: templateEmployeeId
           type: string
         documentLocation:
-          title: documentLocation
           type: string
         category:
-          title: category
           type: string
         name:
-          title: name
           type: string
         sideCode:
-          title: sideCode
           type: string
         status:
-          title: status
           type: string
         content:
-          title: content
           type: string
         affiliation:
-          title: affiliation
           type: string
         profession:
-          title: profession
           type: string
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -7545,28 +7284,21 @@ components:
             - PRIVATE
           type: string
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         validFromDate:
-          title: validFromDate
           type: string
           format: date
         validToDate:
-          title: validToDate
           type: string
           format: date
         required:
-          title: required
           type: boolean
     DocumentUpdateMessage:
-      title: DocumentUpdateMessage
       type: object
       properties:
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -7574,84 +7306,59 @@ components:
             - PRIVATE
           type: string
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         validFromDate:
-          title: validFromDate
           type: string
           format: date
         validToDate:
-          title: validToDate
           type: string
           format: date
         category:
-          title: category
           type: string
         template:
-          title: template
           type: string
         name:
-          title: name
           type: string
         status:
-          title: status
           type: string
         content:
-          title: content
           type: string
         type:
-          title: type
           type: string
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
       required:
         - classification
     EmployeeUpdateMessage:
-      title: EmployeeUpdateMessage
       type: object
       properties:
         address:
-          title: address
           type: string
         profession:
-          title: profession
           type: string
         notes:
-          title: notes
           type: string
         email:
-          title: email
           type: string
         lastName:
-          title: lastName
           type: string
         firstName:
-          title: firstName
           type: string
         group:
-          title: group
           type: boolean
         herNumber:
-          title: herNumber
           type: string
         hprNumber:
-          title: hprNumber
           type: string
         expertise:
-          title: expertise
           type: string
         associationType:
-          title: associationType
           type: string
         accessLevel:
-          title: accessLevel
           enum:
             - NONE
             - READONLY
@@ -7660,128 +7367,92 @@ components:
             - LEADER
           type: string
         phone:
-          title: phone
           type: string
         secondaryPhone:
-          title: secondaryPhone
           type: string
         speciality:
-          title: speciality
           type: string
         status:
-          title: status
           enum:
             - ACTIVE
             - LEAVE
             - TERMINATED
           type: string
         functionAssignments:
-          title: functionAssignments
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/FunctionAssignment'
       required:
         - accessLevel
     FunctionAssignment:
-      title: FunctionAssignment
       type: object
       properties:
         functionUuid:
-          title: functionUuid
           $ref: '#/components/schemas/uuid'
         employeeUuid:
-          title: employeeUuid
           $ref: '#/components/schemas/uuid'
     ExternalConnectionUpdateMessage:
-      title: ExternalConnectionUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         type:
-          title: type
           type: string
         connectionType:
-          title: connectionType
           enum:
             - NONE
             - NHN
             - OTHER
           type: string
         description:
-          title: description
           type: string
         employeeUuid:
-          title: employeeUuid
           $ref: '#/components/schemas/uuid'
         partnerUuid:
-          title: partnerUuid
           $ref: '#/components/schemas/uuid'
         networkUuid:
-          title: networkUuid
           $ref: '#/components/schemas/uuid'
         supplierUuid:
-          title: supplierUuid
           $ref: '#/components/schemas/uuid'
     FeedbackMessage:
-      title: FeedbackMessage
       type: object
       properties:
         email:
-          title: email
           type: string
         url:
-          title: url
           type: string
         message:
-          title: message
           type: string
     FunctionRotationUpdateMessage:
-      title: FunctionRotationUpdateMessage
       type: object
       properties:
         employee:
-          title: employee
           $ref: '#/components/schemas/uuid'
         day1:
-          title: day1
           type: string
         day2:
-          title: day2
           type: string
         day3:
-          title: day3
           type: string
         day4:
-          title: day4
           type: string
         day5:
-          title: day5
           type: string
         day6:
-          title: day6
           type: string
         day7:
-          title: day7
           type: string
         startDate:
-          title: startDate
           type: string
           format: date
     FunctionTaskUpdateMessage:
-      title: FunctionTaskUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         rrule:
-          title: rrule
           type: string
         reminder:
-          title: reminder
           enum:
             - NONE
             - AT_START
@@ -7791,31 +7462,23 @@ components:
             - FIVE_HOURS_BEFORE
           type: string
         procedures:
-          title: procedures
           type: string
         situation:
-          title: situation
           type: string
         functionUuid:
-          title: functionUuid
           type: string
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
       required:
         - reminder
     FunctionUpdateMessage:
-      title: FunctionUpdateMessage
       type: object
       properties:
         responsibility:
-          title: responsibility
           type: string
         type:
-          title: type
           enum:
             - SINGLE
             - ROTATED
@@ -7823,71 +7486,50 @@ components:
             - COMMON
           type: string
         description:
-          title: description
           type: string
         rotation:
-          title: rotation
           type: string
         name:
-          title: name
           type: string
         status:
-          title: status
           type: string
         category:
-          title: category
           type: string
         template:
-          title: template
           type: string
         employees:
-          title: employees
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         rotations:
-          title: rotations
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/FunctionRotationUpdateMessage'
       required:
         - type
         - rotation
     GuidelineUpdateMessage:
-      title: GuidelineUpdateMessage
       type: object
       properties:
         category:
-          title: category
           type: string
         template:
-          title: template
           type: string
         name:
-          title: name
           type: string
         status:
-          title: status
           type: string
         content:
-          title: content
           type: string
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -7895,170 +7537,118 @@ components:
             - PRIVATE
           type: string
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
     InvoiceMessage:
-      title: InvoiceMessage
       type: object
       properties:
         expires:
-          title: expires
           type: string
           format: date
         products:
-          title: products
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/InvoiceProduct'
         comment:
-          title: comment
           type: string
     InvoiceProduct:
-      title: InvoiceProduct
       type: object
       properties:
         description:
-          title: description
           type: string
         amount:
-          title: amount
           type: integer
     IssueSimpleUpdateMessage:
-      title: IssueSimpleUpdateMessage
       type: object
       properties:
         description:
-          title: description
           type: string
     IssueUpdateMessage:
-      title: IssueUpdateMessage
       type: object
       properties:
         notes:
-          title: notes
           type: string
         description:
-          title: description
           type: string
         identifiedMeasures:
-          title: identifiedMeasures
           type: string
         shallEvaluated:
-          title: shallEvaluated
           type: boolean
         immediateMeasures:
-          title: immediateMeasures
           type: string
         furtherMeasures:
-          title: furtherMeasures
           type: string
         name:
-          title: name
           type: string
         correction:
-          title: correction
           type: string
         registeredBy:
-          title: registeredBy
           $ref: '#/components/schemas/uuid'
         reportedTo:
-          title: reportedTo
           $ref: '#/components/schemas/uuid'
         reportedBy:
-          title: reportedBy
           $ref: '#/components/schemas/uuid'
         responsibleBy:
-          title: responsibleBy
           $ref: '#/components/schemas/uuid'
         processedBy:
-          title: processedBy
           $ref: '#/components/schemas/uuid'
         evaluatedBy:
-          title: evaluatedBy
           $ref: '#/components/schemas/uuid'
         processedDate:
-          title: processedDate
           type: string
           format: date
         reportedDate:
-          title: reportedDate
           type: string
           format: date
         evaluatedDate:
-          title: evaluatedDate
           type: string
           format: date
         eventDate:
-          title: eventDate
           type: string
           format: date
         registeredDate:
-          title: registeredDate
           type: string
           format: date
         evaluated:
-          title: evaluated
           type: boolean
         implementedMeasure:
-          title: implementedMeasure
           type: boolean
         reportedLabourInspection:
-          title: reportedLabourInspection
           type: boolean
         reportedInspectorate:
-          title: reportedInspectorate
           type: boolean
         reportedSafetyManager:
-          title: reportedSafetyManager
           type: boolean
         reportedCountyMedical:
-          title: reportedCountyMedical
           type: boolean
         informationLeakagePossibility:
-          title: informationLeakagePossibility
           type: boolean
         personDamagePossibility:
-          title: personDamagePossibility
           type: boolean
         relateToEmployees:
-          title: relateToEmployees
           type: boolean
         relateToEquipment:
-          title: relateToEquipment
           type: boolean
         relateToPatient:
-          title: relateToPatient
           type: boolean
         relateToPatientInstitution:
-          title: relateToPatientInstitution
           type: boolean
         relateToRadiation:
-          title: relateToRadiation
           type: boolean
         requiresMeasures:
-          title: requiresMeasures
           type: boolean
         requireEvaluation:
-          title: requireEvaluation
           type: boolean
         measuresSatisfactorily:
-          title: measuresSatisfactorily
           type: boolean
         evaluatedOk:
-          title: evaluatedOk
           type: boolean
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
     IssuesRequest:
-      title: IssuesRequest
       description: |
         A request message bean for issue requests IssuesRequest,
 
@@ -8066,411 +7656,285 @@ components:
       type: object
       properties:
         uuid:
-          title: uuid
           $ref: '#/components/schemas/uuid'
         organizationId:
-          title: organizationId
           type: integer
         description:
-          title: description
           type: string
     LinkViewModel:
-      title: LinkViewModel
       type: object
       properties:
         linkName:
-          title: linkName
           type: string
         linkHref:
-          title: linkHref
           type: string
         pageId:
-          title: pageId
           type: integer
     MessageViewModel:
-      title: MessageViewModel
       type: object
       properties:
         message:
-          title: message
           type: string
     NetworkUpdateMessage:
-      title: NetworkUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         nhnDescription:
-          title: nhnDescription
           type: string
         otherDescription:
-          title: otherDescription
           type: string
         connectionType:
-          title: connectionType
           type: string
         supplierUuid:
-          title: supplierUuid
           $ref: '#/components/schemas/uuid'
     OrganizationCreateMessage:
-      title: OrganizationCreateMessage
       type: object
       properties:
         firstName:
-          title: firstName
           type: string
         lastName:
-          title: lastName
           type: string
         invoiceAddress:
-          title: invoiceAddress
           type: string
         invoicePostcode:
-          title: invoicePostcode
           type: string
         invoiceLocality:
-          title: invoiceLocality
           type: string
         organizationName:
-          title: organizationName
           type: string
         employeesCount:
-          title: employeesCount
           type: integer
         specialTerms:
-          title: specialTerms
           enum:
             - NONE
             - DNLF
             - NFF
           type: string
         businessEntityType:
-          title: businessEntityType
           type: string
         referralCode:
-          title: referralCode
           type: string
     OrganizationSettingsUpdateMessage:
-      title: OrganizationSettingsUpdateMessage
       type: object
       properties:
         invoiceAddress:
-          title: invoiceAddress
           type: string
         reference:
-          title: reference
           type: string
         invoiceReceiver:
-          title: invoiceReceiver
           type: string
         ownerEmail:
-          title: ownerEmail
           type: string
         invoicePostcode:
-          title: invoicePostcode
           type: string
         invoiceLocality:
-          title: invoiceLocality
           type: string
         specialTerms:
-          title: specialTerms
           enum:
             - NONE
             - DNLF
             - NFF
           type: string
     OrganizationUpdateMessage:
-      title: OrganizationUpdateMessage
       type: object
       properties:
         address:
-          title: address
           type: string
         notes:
-          title: notes
           type: string
         officeAddress:
-          title: officeAddress
           type: string
         officePostcode:
-          title: officePostcode
           type: string
         email:
-          title: email
           type: string
         herNumber:
-          title: herNumber
           type: string
         name:
-          title: name
           type: string
         businessEntityType:
-          title: businessEntityType
           type: string
         organizationNumber:
-          title: organizationNumber
           type: string
         mailAddress:
-          title: mailAddress
           type: string
         mailPostcode:
-          title: mailPostcode
           type: string
         fax:
-          title: fax
           type: string
         phone:
-          title: phone
           type: string
         type:
-          title: type
           type: string
         url:
-          title: url
           type: string
         activityCodes:
-          title: activityCodes
           type: array
           items:
-            title: items
             type: string
     OrganizationViewModel:
-      title: OrganizationViewModel
       type: object
       properties:
         organizationId:
-          title: organizationId
           type: integer
         href:
-          title: href
           type: string
         address:
-          title: address
           type: string
         notes:
-          title: notes
           type: string
         officeAddress:
-          title: officeAddress
           type: string
         officePostcode:
-          title: officePostcode
           type: string
         email:
-          title: email
           type: string
         herNumber:
-          title: herNumber
           type: string
         name:
-          title: name
           type: string
         businessEntityType:
-          title: businessEntityType
           type: string
         organizationNumber:
-          title: organizationNumber
           type: string
         mailAddress:
-          title: mailAddress
           type: string
         mailPostcode:
-          title: mailPostcode
           type: string
         fax:
-          title: fax
           type: string
         phone:
-          title: phone
           type: string
         type:
-          title: type
           type: string
         url:
-          title: url
           type: string
         invoiceReceiver:
-          title: invoiceReceiver
           type: string
         invoicePostcode:
-          title: invoicePostcode
           type: string
         invoiceLocality:
-          title: invoiceLocality
           type: string
         reference:
-          title: reference
           type: string
         invoiceAddress:
-          title: invoiceAddress
           type: string
         ownerEmail:
-          title: ownerEmail
           type: string
         settingsHref:
-          title: settingsHref
           type: string
         activityCodes:
-          title: activityCodes
           type: array
           items:
-            title: items
             type: string
         specialTerms:
-          title: specialTerms
           enum:
             - NONE
             - DNLF
             - NFF
           type: string
     PageViewModel:
-      title: PageViewModel
       type: object
       properties:
         pageId:
-          title: pageId
           type: integer
         name:
-          title: name
           type: string
         subPages:
-          title: subPages
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/PageViewModel'
         helpContent:
-          title: helpContent
           type: string
         order:
-          title: order
           type: integer
     PartnerUpdateMessage:
-      title: PartnerUpdateMessage
       type: object
       properties:
         email:
-          title: email
           type: string
         url:
-          title: url
           type: string
         notes:
-          title: notes
           type: string
         industry:
-          title: industry
           type: string
         name:
-          title: name
           type: string
         address:
-          title: address
           type: string
         phone:
-          title: phone
           type: string
         remoteAccess:
-          title: remoteAccess
           type: boolean
         physicalAccess:
-          title: physicalAccess
           type: boolean
         pageAccess:
-          title: pageAccess
           type: boolean
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
     PasswordRequest:
-      title: PasswordRequest
       type: object
       properties:
         user:
-          title: user
           type: string
     QualityReviewIndicatorUpdateMessage:
-      title: QualityReviewIndicatorUpdateMessage
       type: object
       properties:
         assessment:
-          title: assessment
           type: string
         approved:
-          title: approved
           type: boolean
         name:
-          title: name
           type: string
     QualityReviewMainGoalUpdateMessage:
-      title: QualityReviewMainGoalUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         description:
-          title: description
           type: string
     QualityReviewSubGoalUpdateMessage:
-      title: QualityReviewSubGoalUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         person:
-          title: person
           $ref: '#/components/schemas/uuid'
     QualityUpdateMessage:
-      title: QualityUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
     ReferenceViewModel:
-      title: ReferenceViewModel
       type: object
       properties:
         groupName:
-          title: groupName
           type: string
         pages:
-          title: pages
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/LinkViewModel'
     ReportUpdateMessage:
-      title: ReportUpdateMessage
       type: object
       properties:
         name:
-          title: name
           type: string
         content:
-          title: content
           type: string
         reportDate:
-          title: reportDate
           type: string
           format: date
         employee:
-          title: employee
           $ref: '#/components/schemas/uuid'
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
         classification:
-          title: classification
           default: NONE
           enum:
             - NONE
@@ -8478,111 +7942,77 @@ components:
             - PRIVATE
           type: string
         accessControl:
-          title: accessControl
           type: array
           items:
-            title: items
             $ref: '#/components/schemas/uuid'
     RevisionDifference:
-      title: RevisionDifference
       type: object
       properties:
         fromCurrentToSelf:
-          title: fromCurrentToSelf
           type: string
         fromSelfToCurrent:
-          title: fromSelfToCurrent
           type: string
     RevisionDifferences:
-      title: RevisionDifferences
       type: object
       properties:
         name:
-          title: name
           $ref: '#/components/schemas/RevisionDifference'
         content:
-          title: content
           $ref: '#/components/schemas/RevisionDifference'
     RevisionViewModel:
-      title: RevisionViewModel
       type: object
       properties:
         revisionId:
-          title: revisionId
           type: integer
         name:
-          title: name
           type: string
         content:
-          title: content
           type: string
         dateTime:
-          title: dateTime
           type: string
         changedBy:
-          title: changedBy
           type: string
         status:
-          title: status
           type: string
         differences:
-          title: differences
           $ref: '#/components/schemas/RevisionDifferences'
     RiskAssessmentUpdateMessage:
-      title: RiskAssessmentUpdateMessage
       type: object
       properties:
         description:
-          title: description
           type: string
         responsibleBy:
-          title: responsibleBy
           $ref: '#/components/schemas/uuid'
         probability:
-          title: probability
           type: integer
         consequence:
-          title: consequence
           type: integer
         riskDescription:
-          title: riskDescription
           type: string
         measures:
-          title: measures
           type: string
         assessmentDate:
-          title: assessmentDate
           type: string
           format: date
         violatesInformationSecurityRequirements:
-          title: violatesInformationSecurityRequirements
           type: boolean
         violatesIntegrityRequirement:
-          title: violatesIntegrityRequirement
           type: boolean
         violatesConfidentialityRequirement:
-          title: violatesConfidentialityRequirement
           type: boolean
         violatesNonRepudiationRequirement:
-          title: violatesNonRepudiationRequirement
           type: boolean
         violatesAvailabilityRequirement:
-          title: violatesAvailabilityRequirement
           type: boolean
         determinedBy:
-          title: determinedBy
           $ref: '#/components/schemas/uuid'
         name:
-          title: name
           type: string
         pages:
-          title: pages
           type: array
           items:
-            title: items
             type: integer
     ScheduledTimeMessage:
-      title: ScheduledTimeMessage
       description: >
         Used by time jobs, wrap a single property 'scheduledTime' representing a
         job fire time,
@@ -8592,68 +8022,42 @@ components:
       type: object
       properties:
         scheduledTime:
-          title: scheduledTime
           type: string
           format: date-time
         organizationId:
-          title: organizationId
           type: integer
     SearchResultHit:
-      title: SearchResultHit
       type: object
       properties:
         id:
-          title: id
           type: string
         entity:
-          title: entity
           type: string
         description:
-          title: description
           type: string
     TokenResult:
-      title: TokenResult
       type: object
       properties:
         email:
-          title: email
           type: string
     TokenViewModel:
-      title: TokenViewModel
       type: object
       properties:
         id:
-          title: id
           $ref: '#/components/schemas/uuid'
         description:
-          title: description
           type: string
-    TransferMessage:
-      title: TransferMessage
-      type: object
-      properties:
-        upgradeUnchangedTemplates:
-          title: upgradeUnchangedTemplates
-          type: boolean
-        upgradeChangedTemplates:
-          title: upgradeChangedTemplates
-          type: boolean
     UserCreateMessage:
-      title: UserCreateMessage
       type: object
       properties:
         email:
-          title: email
           type: string
         password:
-          title: email
           type: string
     EmployeeSummariesUpdateMessage:
-      title: UserCreateMessage
       type: object
       properties:
         summaries:
-          title: summaries
           enum:
             - NONE
             - ALL
@@ -8664,6 +8068,9 @@ components:
   examples: {}
   requestBodies: {}
   headers: {}
-  securitySchemes: {}
+  securitySchemes:
+    UserSecurity:
+      type: http
+      scheme: basic
   links: {}
   callbacks: {}

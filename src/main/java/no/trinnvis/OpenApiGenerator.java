@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
@@ -234,7 +236,7 @@ public class OpenApiGenerator {
             .addMethod(constructorBuilder.build())
             .addMethod(builderMethod)
             .addType(builderBuilder.build())
-            .addAnnotation(AnnotationSpec.builder(Generated.class).addMember("value", "$S", "Generated from RAML").build())
+            .addAnnotation(AnnotationSpec.builder(Generated.class).addMember("value", "$S", "Generated from OpenApi").build())
             .build();
 
         JavaFile javaFile = JavaFile.builder(packageName, spec)
@@ -243,7 +245,13 @@ public class OpenApiGenerator {
 
         javaFile.writeTo(Paths.get(output.getAbsolutePath(), "src/main/java"));
     }
-
+    private static <T, E> Optional<T> getKeyByValue(Map<T, E> map, E value) {
+        return map.entrySet()
+            .stream()
+            .filter(entry -> Objects.equals(entry.getValue(), value))
+            .map(Map.Entry::getKey)
+            .findFirst();
+    }
     private TypeName findClass(String type, Schema p) {
         if (p instanceof StringSchema) {
             StringSchema stringTypeDeclaration = (StringSchema) p;
@@ -281,8 +289,9 @@ public class OpenApiGenerator {
             return findClass(type, dereference(p));
         }
 
-        if (types.containsKey(p.getTitle())) {
-            return types.get(p.getTitle());
+        Optional<String> schemaName = getKeyByValue(openAPI.getComponents().getSchemas(), p);
+        if (schemaName.isPresent() && types.containsKey(schemaName.get())) {
+            return types.get(schemaName.get());
         }
 
         if (types.containsKey(p.getType())) {
@@ -293,6 +302,7 @@ public class OpenApiGenerator {
             ArraySchema declaration = (ArraySchema) p;
 
             Schema subSchema = dereference(declaration.getItems());
+
 
             TypeName itemType = findClass(subSchema.getTitle(), subSchema);
             ClassName set = ClassName.get("java.util", "Set");
