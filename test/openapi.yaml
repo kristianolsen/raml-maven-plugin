@@ -5632,10 +5632,6 @@ paths:
         description: uuid
 components:
   schemas:
-    uuid:
-      pattern: >-
-        ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
-      type: string
     AccountCreateMessage:
       description: >
         Extends the organization create message with email and password. Allows
@@ -5720,7 +5716,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         firstName:
           type: string
         lastName:
@@ -5768,7 +5765,8 @@ components:
         accessLevel:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
       required:
         - uuid
     AccountStateUpdateMessage:
@@ -5796,21 +5794,29 @@ components:
           items:
             type: string
         leaderFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         healthSafetyAndEnvironmentalFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         assetFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         computerFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         economicsFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         qualityManagerFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         professionalDevelopmentFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         humanResourcesFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
       required:
         - employees
         - leaderFunction
@@ -5839,21 +5845,29 @@ components:
           items:
             type: string
         leaderFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         healthSafetyAndEnvironmentalFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         assetFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         computerFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         economicsFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         qualityManagerFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         professionalDevelopmentFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         humanResourcesFunction:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
       required:
         - employees
         - leaderFunction
@@ -6091,7 +6105,8 @@ components:
         complianceDeclaration:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         requiresElectricity:
           type: boolean
         storesSensitiveInformation:
@@ -6114,7 +6129,8 @@ components:
         tasks:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6123,7 +6139,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         fullPath:
           type: string
         name:
@@ -6180,9 +6197,11 @@ components:
         deleted:
           type: boolean
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         networkUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6191,7 +6210,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         templateId:
           type: string
         template:
@@ -6220,15 +6240,18 @@ components:
         employees:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         partners:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6249,9 +6272,11 @@ components:
         mobilePhone:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         partner:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         accessLevel:
           enum:
             - NONE
@@ -6270,7 +6295,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         templateId:
           type: string
         templateEmployeeId:
@@ -6315,15 +6341,18 @@ components:
         employees:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         partners:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         pages:
           type: array
           items:
@@ -6361,7 +6390,8 @@ components:
             - PRIVATE
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         helpContent:
           type: string
         deleted:
@@ -6373,7 +6403,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6396,7 +6427,8 @@ components:
         profession:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         address:
           type: string
         address2:
@@ -6422,19 +6454,23 @@ components:
         issues:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         riskAssessment:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         externalConnections:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         qualitySubGoalsResponsible:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         accessLevel:
           enum:
             - NONE
@@ -6485,15 +6521,20 @@ components:
         deleted:
           type: boolean
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         employeeUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         partnerUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         networkUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         supplierUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6502,7 +6543,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         responsibility:
           type: string
         type:
@@ -6533,7 +6575,8 @@ components:
         employees:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         rotations:
           type: array
           items:
@@ -6554,7 +6597,8 @@ components:
       type: object
       properties:
         employee:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         day1:
           type: integer
         day2:
@@ -6593,13 +6637,17 @@ components:
         name:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         function:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         asset:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         employee:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         rrule:
           type: string
         helpContent:
@@ -6633,7 +6681,8 @@ components:
         content:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         helpContent:
           type: string
         deleted:
@@ -6652,7 +6701,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6671,7 +6721,8 @@ components:
         immediateMeasures:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         furtherMeasures:
           type: string
         name:
@@ -6679,17 +6730,23 @@ components:
         correction:
           type: string
         registeredBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         reportedTo:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         reportedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         responsibleBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         processedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         evaluatedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         processedDate:
           type: string
           format: date
@@ -6753,7 +6810,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         name:
           type: string
         nhnDescription:
@@ -6763,7 +6821,8 @@ components:
         connectionType:
           type: string
         supplierUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6788,7 +6847,8 @@ components:
         phone:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         deleted:
           type: boolean
         remoteAccess:
@@ -6804,7 +6864,8 @@ components:
         externalConnections:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         contacts:
           type: array
           items:
@@ -6821,7 +6882,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         name:
           type: string
         mainGoals:
@@ -6838,7 +6900,8 @@ components:
         name:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         subGoals:
           type: array
           items:
@@ -6851,9 +6914,11 @@ components:
         name:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         responsibleBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         indicators:
           type: array
           items:
@@ -6873,7 +6938,8 @@ components:
         approved:
           type: boolean
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
     ReportViewModel:
       type: object
       properties:
@@ -6885,9 +6951,11 @@ components:
           type: string
           format: date
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         employeeUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         helpContent:
           type: string
         classification:
@@ -6906,7 +6974,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         attachments:
           type: array
           items:
@@ -6927,7 +6996,8 @@ components:
         measures:
           type: string
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         helpContent:
           type: string
         assessmentDate:
@@ -6946,9 +7016,11 @@ components:
         deleted:
           type: boolean
         responsibleBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         determinedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         pages:
           type: array
           items:
@@ -7179,7 +7251,8 @@ components:
         autoUpdateAddressNhn:
           type: boolean
         networkUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
     ConstitutionalDocumentUpdateMessage:
       type: object
       properties:
@@ -7200,11 +7273,13 @@ components:
         employees:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         partners:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         classification:
           default: NONE
           enum:
@@ -7215,7 +7290,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
     ContactPersonUpdateMessage:
       type: object
       properties:
@@ -7247,11 +7323,13 @@ components:
         employees:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         partners:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         pages:
           type: array
           items:
@@ -7286,7 +7364,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         validFromDate:
           type: string
           format: date
@@ -7330,7 +7409,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
       required:
         - classification
     EmployeeUpdateMessage:
@@ -7388,9 +7468,11 @@ components:
       type: object
       properties:
         functionUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         employeeUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
     ExternalConnectionUpdateMessage:
       type: object
       properties:
@@ -7407,13 +7489,17 @@ components:
         description:
           type: string
         employeeUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         partnerUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         networkUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         supplierUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
     FeedbackMessage:
       type: object
       properties:
@@ -7427,7 +7513,8 @@ components:
       type: object
       properties:
         employee:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         day1:
           type: string
         day2:
@@ -7500,7 +7587,8 @@ components:
         employees:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
         pages:
           type: array
           items:
@@ -7539,7 +7627,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
     InvoiceMessage:
       type: object
       properties:
@@ -7584,17 +7673,23 @@ components:
         correction:
           type: string
         registeredBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         reportedTo:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         reportedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         responsibleBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         processedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         evaluatedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         processedDate:
           type: string
           format: date
@@ -7656,7 +7751,8 @@ components:
       type: object
       properties:
         uuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         organizationId:
           type: integer
         description:
@@ -7687,7 +7783,8 @@ components:
         connectionType:
           type: string
         supplierUuid:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
     OrganizationCreateMessage:
       type: object
       properties:
@@ -7903,7 +8000,8 @@ components:
         name:
           type: string
         person:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
     QualityUpdateMessage:
       type: object
       properties:
@@ -7929,7 +8027,8 @@ components:
           type: string
           format: date
         employee:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         pages:
           type: array
           items:
@@ -7944,7 +8043,8 @@ components:
         accessControl:
           type: array
           items:
-            $ref: '#/components/schemas/uuid'
+            type: string
+          format: uuid
     RevisionDifference:
       type: object
       properties:
@@ -7982,7 +8082,8 @@ components:
         description:
           type: string
         responsibleBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         probability:
           type: integer
         consequence:
@@ -8005,7 +8106,8 @@ components:
         violatesAvailabilityRequirement:
           type: boolean
         determinedBy:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         name:
           type: string
         pages:
@@ -8044,7 +8146,8 @@ components:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/uuid'
+          type: string
+          format: uuid
         description:
           type: string
     UserCreateMessage:

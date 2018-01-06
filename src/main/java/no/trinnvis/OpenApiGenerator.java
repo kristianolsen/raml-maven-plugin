@@ -19,6 +19,7 @@ import io.swagger.oas.models.media.DateTimeSchema;
 import io.swagger.oas.models.media.ObjectSchema;
 import io.swagger.oas.models.media.Schema;
 import io.swagger.oas.models.media.StringSchema;
+import io.swagger.oas.models.media.UUIDSchema;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.parser.models.SwaggerParseResult;
 import java.io.File;
@@ -57,6 +58,14 @@ public class OpenApiGenerator {
         types.put("date-time", ClassName.get(ZonedDateTime.class));
         types.put("integer", ClassName.get(Integer.class));
         types.put("boolean", ClassName.get(Boolean.class));
+    }
+
+    private static <T, E> Optional<T> getKeyByValue(Map<T, E> map, E value) {
+        return map.entrySet()
+            .stream()
+            .filter(entry -> Objects.equals(entry.getValue(), value))
+            .map(Map.Entry::getKey)
+            .findFirst();
     }
 
     void execute() {
@@ -138,13 +147,11 @@ public class OpenApiGenerator {
 
         types.forEach((key, value) -> {
 
-            if (!"uuid".equals(key)) {
-                System.out.println("" + key);
-                try {
-                    writeModelType(key, value, destinationPackage);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            System.out.println("" + key);
+            try {
+                writeModelType(key, value, destinationPackage);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -245,13 +252,7 @@ public class OpenApiGenerator {
 
         javaFile.writeTo(Paths.get(output.getAbsolutePath(), "src/main/java"));
     }
-    private static <T, E> Optional<T> getKeyByValue(Map<T, E> map, E value) {
-        return map.entrySet()
-            .stream()
-            .filter(entry -> Objects.equals(entry.getValue(), value))
-            .map(Map.Entry::getKey)
-            .findFirst();
-    }
+
     private TypeName findClass(String type, Schema p) {
         if (p instanceof StringSchema) {
             StringSchema stringTypeDeclaration = (StringSchema) p;
@@ -285,6 +286,11 @@ public class OpenApiGenerator {
             return types.get(schema.getFormat());
         }
 
+        if (p instanceof UUIDSchema) {
+            UUIDSchema schema = (UUIDSchema) p;
+            return types.get(schema.getFormat());
+        }
+
         if (p != dereference(p)) {
             return findClass(type, dereference(p));
         }
@@ -302,7 +308,6 @@ public class OpenApiGenerator {
             ArraySchema declaration = (ArraySchema) p;
 
             Schema subSchema = dereference(declaration.getItems());
-
 
             TypeName itemType = findClass(subSchema.getTitle(), subSchema);
             ClassName set = ClassName.get("java.util", "Set");
