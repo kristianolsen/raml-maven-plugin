@@ -169,6 +169,15 @@ public final class ItemWithAdditionalProperties {
             return this;
         }
 
+/*
+        public Builder addProperties(
+            Map<MetricProperty, Object> metricsProperties) {
+            if (metricsProperties != null) {
+                this.metricProperties.putAll(metricsProperties);
+            }
+            return this;
+        }
+*/
 
         /**
          * Creates a new ItemWithAdditionaProperties with all configuration options that have been specified by calling methods on this builder.
