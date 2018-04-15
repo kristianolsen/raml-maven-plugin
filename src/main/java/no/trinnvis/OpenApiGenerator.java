@@ -3,6 +3,7 @@ package no.trinnvis;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Strings;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -13,6 +14,8 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.swagger.oas.models.OpenAPI;
+import io.swagger.oas.models.Operation;
+import io.swagger.oas.models.PathItem;
 import io.swagger.oas.models.media.ArraySchema;
 import io.swagger.oas.models.media.DateSchema;
 import io.swagger.oas.models.media.DateTimeSchema;
@@ -29,12 +32,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
@@ -76,6 +81,166 @@ public class OpenApiGenerator {
         handleTypes(openAPI.getComponents().getSchemas());
 
         writeEnums();
+
+        writeResources();
+
+    }
+
+    private void writeResources() {
+
+
+        Tree<String> forest = new Tree<>("forest");
+        Tree<String> current = forest;
+
+        for (String tree : openAPI.getPaths().keySet()) {
+            Tree<String> root = current;
+
+            for (String data : tree.split("/")) {
+                current = current.child(data);
+            }
+
+            current = root;
+        }
+
+        forest.accept(new PrintIndentedVisitor(0));
+
+
+
+
+        Set<String> prefixes = new HashSet<>();
+
+        openAPI.getPaths().entrySet()
+            .stream()
+            .sorted(Comparator.comparing(e -> e.getKey()))
+            .forEach((e) -> {
+
+                String[] r = e.getKey().split("/");
+                prefixes.add(r[1]);
+
+                //    System.out.println(e.getKey() + " " );
+            });
+
+        prefixes.forEach(e -> {
+            System.out.println(e);
+            try {
+                writeResourceApi(e);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+
+        //openAPI.getTags().forEach(tag -> {
+        //    System.out.println(tag);
+        //});
+    }
+
+    private void writeResourceApi(final String e) throws IOException {
+
+        TypeSpec.Builder builder = TypeSpec.classBuilder(CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, e) + "Api")
+            .addJavadoc("The $L class.", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e).replaceAll("_", " "))
+            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            .addAnnotation(AnnotationSpec.builder(javax.ws.rs.Path.class).addMember("value", "\"/$L\"", e).build());
+
+
+
+        writeResourceApiOperations(builder, e);
+
+        JavaFile javaFile = JavaFile.builder(destinationPackage + ".resources", builder.build())
+            .skipJavaLangImports(true)
+            .build();
+
+        javaFile.writeTo(Paths.get(output.getAbsolutePath(), "src/main/java"));
+
+    }
+
+    private void writeResourceApiOperations(final TypeSpec.Builder builder, final String e) {
+        writeDirectOperations(builder, e, CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, ""), "");
+        writeIndirectOperations(builder, e);
+        writeIndirectOperationsWithPathParameter(builder, e);
+    }
+
+    private void writeIndirectOperations(final TypeSpec.Builder builder, final String e) {
+        openAPI.getPaths().entrySet()
+            .stream()
+            .filter(item -> {
+                String[] x = item.getKey().split(("/"));
+
+                return x.length == 3 && x[1].equals(e) && !x[2].contains("{");
+            }).forEach(item -> {
+            String[] x = item.getKey().split(("/"));
+
+            writeDirectOperations(builder, item.getKey().substring(1), CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, x[2]), x[2]);
+        });
+    }
+
+
+    private void writeIndirectOperationsWithPathParameter(final TypeSpec.Builder builder, final String e) {
+        openAPI.getPaths().entrySet()
+            .stream()
+            .filter(item -> {
+                String[] x = item.getKey().split(("/"));
+
+                return x.length == 3 && x[1].equals(e) && x[2].contains("{");
+            }).forEach(item -> {
+            String[] x = item.getKey().split(("/"));
+
+
+            String name = x[2].substring(1, x[2].length()-1);
+
+            name = name.replace("+","");
+
+            final String method = "get" + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, name);
+            MethodSpec.Builder builder1 = MethodSpec.methodBuilder(method)
+                .addModifiers(Modifier.PUBLIC);
+
+            final String path = "/" + x[2];
+            if (!Strings.isNullOrEmpty(path)) {
+                builder1.addAnnotation(AnnotationSpec.builder(javax.ws.rs.Path.class).addMember("value", "\"$L\"", path).build());
+            }
+
+
+            MethodSpec spec = builder1
+                .returns(String.class)
+                .addStatement("return \"subresource\"")
+                .build();
+
+            builder.addMethod(spec);
+        });
+    }
+
+
+    private void writeDirectOperations(final TypeSpec.Builder builder, final String e, final String Suffix, final String path) {
+        final PathItem x = openAPI.getPaths().get("/" + e);
+        if (x != null) {
+            writeOperation(builder, x.getGet(), "get" + Suffix, javax.ws.rs.GET.class, path);
+            writeOperation(builder, x.getPost(), "post" + Suffix, javax.ws.rs.POST.class, path);
+            writeOperation(builder, x.getPut(), "put" + Suffix, javax.ws.rs.PUT.class, path);
+            writeOperation(builder, x.getDelete(), "delete" + Suffix, javax.ws.rs.DELETE.class, path);
+        }
+    }
+
+    private void writeOperation(final TypeSpec.Builder builder, final Operation operation, final String method, Class<?> methodClass, final String path) {
+
+        if (operation != null) {
+
+            MethodSpec.Builder builder1 = MethodSpec.methodBuilder(method)
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(methodClass);
+
+
+            if (!Strings.isNullOrEmpty(path)) {
+                builder1.addAnnotation(AnnotationSpec.builder(javax.ws.rs.Path.class).addMember("value", "\"/$L\"", path).build());
+            }
+
+
+            MethodSpec spec = builder1
+                .returns(String.class)
+                .addStatement("return \"x\"")
+                .build();
+
+            builder.addMethod(spec);
+
+        }
 
     }
 
