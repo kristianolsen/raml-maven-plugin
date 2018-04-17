@@ -4,7 +4,7 @@
 
     <groupId>com.github.kristianolsen</groupId>
     <artifactId>raml-maven-plugin</artifactId>
-    <version>0.2-alpha-8</version>
+    <version>0.2-alpha-9</version>
     <packaging>maven-plugin</packaging>
 
     <name>Raml Maven Plugin</name>

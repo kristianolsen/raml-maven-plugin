@@ -1,5 +1,7 @@
 package no.trinnvis;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.common.base.CaseFormat;
@@ -17,12 +19,15 @@ import io.swagger.oas.models.OpenAPI;
 import io.swagger.oas.models.Operation;
 import io.swagger.oas.models.PathItem;
 import io.swagger.oas.models.media.ArraySchema;
+import io.swagger.oas.models.media.Content;
 import io.swagger.oas.models.media.DateSchema;
 import io.swagger.oas.models.media.DateTimeSchema;
+import io.swagger.oas.models.media.MediaType;
 import io.swagger.oas.models.media.ObjectSchema;
 import io.swagger.oas.models.media.Schema;
 import io.swagger.oas.models.media.StringSchema;
 import io.swagger.oas.models.media.UUIDSchema;
+import io.swagger.oas.models.responses.ApiResponse;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.parser.models.SwaggerParseResult;
 import java.io.File;
@@ -78,11 +83,13 @@ public class OpenApiGenerator {
         SwaggerParseResult result = new OpenAPIParser().readLocation(input.toURI().toString(), null, null);
 
         openAPI = result.getOpenAPI();
+        result.getMessages().forEach(System.out::println);
+
         handleTypes(openAPI.getComponents().getSchemas());
 
         writeEnums();
 
-        writeResources();
+       // writeResources();
 
     }
 
@@ -233,10 +240,26 @@ public class OpenApiGenerator {
             }
 
 
-            MethodSpec spec = builder1
-                .returns(String.class)
-                .addStatement("return \"x\"")
-                .build();
+            if (operation.getResponses().get("200") != null) {
+                final ApiResponse r = operation.getResponses().get("200");
+                final Content c = r.getContent();
+                if (c != null) {
+                    MediaType m = c.get("application/json");
+
+                    TypeName typeName = findClass("", m.getSchema());
+
+                    builder1
+                        .returns(typeName)
+                        .addStatement("return null");
+                }
+            } else {
+//                builder1
+
+  //                  .addStatement("");
+
+            }
+
+            MethodSpec spec = builder1.build();
 
             builder.addMethod(spec);
 
@@ -342,6 +365,7 @@ public class OpenApiGenerator {
 
             builder.addJavadoc(value.getDescription());
         }
+        TypeName builderType = ClassName.get(packageName, name, name + "Builder");
 
         MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PRIVATE);
@@ -365,7 +389,6 @@ public class OpenApiGenerator {
 
                 addGetMethod(builder, p, type, k);
 
-                TypeName builderType = ClassName.get(packageName, name, name + "Builder");
 
                 addBuilderMethod(builderBuilder, p, type, builderType, name, k);
 
@@ -374,6 +397,7 @@ public class OpenApiGenerator {
             });
 
         }
+
 
         MethodSpec buildMethod = MethodSpec.methodBuilder("build")
             .addModifiers(Modifier.PUBLIC)
@@ -384,6 +408,21 @@ public class OpenApiGenerator {
             .build();
 
         builderBuilder.addMethod(buildMethod);
+
+        Schema additionalProperties = value.getAdditionalProperties();
+        if (additionalProperties != null)
+        {
+            addAdditionalPropertiesField(builder);
+            final String k = "additionalProperties";
+            constructorBuilder
+                .addStatement("$N = builder.$N", k, k);
+
+            addGetAdditionalPropertiesMethod(builder);
+
+            addBuilderMethodForAdditionalProperties(builderBuilder, builderType, name);
+            addBuilderFieldForAdditionalProperties(builderBuilder);
+
+        }
 
         final AnnotationSpec annotationSpec = AnnotationSpec.builder(JsonPOJOBuilder.class)
             .addMember("withPrefix", "$S", "")
@@ -402,6 +441,9 @@ public class OpenApiGenerator {
             .returns(ClassName.get(packageName, name, name + "Builder"))
             .addStatement("return new " + name + "Builder()")
             .build();
+
+
+
 
         TypeSpec spec = builder
             .addAnnotation(annotationSpecForClass)
@@ -513,6 +555,21 @@ public class OpenApiGenerator {
 
         builder.addMethod(get);
     }
+    private void addGetAdditionalPropertiesMethod(TypeSpec.Builder builder) {
+        String propertyName = "additionalProperties";
+        ParameterizedTypeName type = ParameterizedTypeName.get(Map.class, String.class, Object.class);
+        String prefix = "get";
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(prefix + capitalize(propertyName))
+            .returns(type)
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(JsonAnyGetter.class)
+            .addStatement("return this." + propertyName);
+
+         MethodSpec get = methodBuilder
+            .build();
+
+        builder.addMethod(get);
+    }
 
     private void addBuilderMethod(TypeSpec.Builder builder, Schema p, TypeName type, TypeName builderType, String name, String propertyName) {
 
@@ -535,9 +592,62 @@ public class OpenApiGenerator {
 
         builder.addMethod(get);
     }
+    private void addBuilderMethodForAdditionalProperties(TypeSpec.Builder builder, TypeName builderType, String name) {
+
+        String propertyName = "additionalProperties";
+        ParameterizedTypeName type = ParameterizedTypeName.get(Map.class, String.class, Object.class);
+
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(propertyName)
+            .returns(builderType)
+            .addModifiers(Modifier.PUBLIC)
+            .addJavadoc("Sets the $L property for the new $L.\n", propertyName, name)
+            .addJavadoc("@param $L the $L\n", propertyName, propertyName)
+            .addJavadoc("@returns a reference to this $T", builderType)
+            .addParameter(type, propertyName, Modifier.FINAL)
+            .addStatement("this." + propertyName + "=" + propertyName)
+            .addStatement("return this");
+
+         MethodSpec get = methodBuilder
+            .build();
+
+        builder.addMethod(get);
+
+
+
+        MethodSpec.Builder singlePropertyMethodBuilder = MethodSpec.methodBuilder("addSingleProperty")
+            .returns(builderType)
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(JsonAnySetter.class)
+            .addJavadoc("Adds an additional property for the new $L.\n", name)
+            .addJavadoc("@param key the property name\n")
+            .addJavadoc("@param value the property value\n")
+            .addJavadoc("@returns a reference to this $T", builderType)
+            .addParameter(ClassName.get(String.class), "key", Modifier.FINAL)
+            .addParameter(ClassName.get(Object.class), "value", Modifier.FINAL)
+            .addStatement("this." + propertyName + ".put(key, value)")
+            .addStatement("return this");
+
+        builder.addMethod(singlePropertyMethodBuilder.build());
+
+
+    }
+
 
     private void addField(TypeSpec.Builder builder, Schema p, TypeName type, final String propertyName) {
         FieldSpec.Builder fieldBuilder = FieldSpec.builder(type, propertyName)
+            .addModifiers(Modifier.PRIVATE, Modifier.FINAL);
+
+        FieldSpec field = fieldBuilder
+            .build();
+
+        builder.addField(field);
+    }
+
+    private void addAdditionalPropertiesField(TypeSpec.Builder builder) {
+
+        ParameterizedTypeName type = ParameterizedTypeName.get(Map.class, String.class, Object.class);
+
+        FieldSpec.Builder fieldBuilder = FieldSpec.builder(type, "additionalProperties")
             .addModifiers(Modifier.PRIVATE, Modifier.FINAL);
 
         FieldSpec field = fieldBuilder
@@ -569,6 +679,25 @@ public class OpenApiGenerator {
 
         builder.addField(field);
     }
+
+    private void addBuilderFieldForAdditionalProperties(TypeSpec.Builder builder) {
+        String propertyName = "additionalProperties";
+        ParameterizedTypeName type = ParameterizedTypeName.get(Map.class, String.class, Object.class);
+        FieldSpec.Builder fieldBuilder = FieldSpec.builder(type, propertyName)
+            .addModifiers(Modifier.PRIVATE);
+
+            fieldBuilder
+                .initializer("new $T<>()", HashMap.class);
+
+        FieldSpec field = fieldBuilder
+            .build();
+
+        builder.addField(field);
+    }
+
+
+
+
 /*
     private void printType(TypeDeclaration declaration) {
         if (declaration instanceof ObjectTypeDeclaration) {

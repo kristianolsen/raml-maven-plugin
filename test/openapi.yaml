@@ -6211,9 +6211,9 @@ components:
           type: string
         contracts:
           type: array
-            items:
-              type: string
-              format: uuid
+          items:
+            type: string
+            format: uuid
         systemUpdateOperatorType:
           type: string
         systemUpdateOperator:
@@ -6324,12 +6324,12 @@ components:
           type: array
           items:
             type: string
-            formt: uuid
+            format: uuid
         sharedMedicalRecordsContracts:
           type: array
           items:
             type: string
-            formt: uuid
+            format: uuid
         treatments:
           type: array
           items:
@@ -6342,7 +6342,7 @@ components:
           type: array
           items:
             type: string
-            formt: uuid
+            format: uuid
         journalHasElectronicMessaging:
           type: boolean
         messagingType:
@@ -6354,7 +6354,7 @@ components:
           type: array
           items:
             type: string
-            formt: uuid
+            format: uuid
         otherRiskAssessments:
           type: string
         riskAssessmentConcludesOk:
@@ -7400,9 +7400,9 @@ components:
           type: string
         contracts:
           type: array
-            items:
-              type: string
-              format: uuid
+          items:
+            type: string
+            format: uuid
         systemUpdateOperatorType:
           type: string
         systemUpdateOperator:
@@ -7715,6 +7715,8 @@ components:
           format: uuid
     ExternalConnectionUpdateMessage:
       type: object
+      additionalProperties:
+        type: object
       properties:
         name:
           type: string
@@ -8025,7 +8027,7 @@ components:
         supplierUuid:
           type: string
           format: uuid
-        type:
+        networkType:
           enum:
             - cable
             - wifi
