@@ -518,6 +518,9 @@ public class OpenApiGenerator {
 
             TypeName itemType = findClass(subSchema.getTitle(), subSchema);
             ClassName set = ClassName.get("java.util", "Set");
+            if ("list".equals(declaration.getFormat())) {
+                set = ClassName.get("java.util", "List");
+            }
             return ParameterizedTypeName.get(set, itemType);
         }
 

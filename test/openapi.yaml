@@ -7798,6 +7798,7 @@ components:
           type: string
         pages:
           type: array
+          format: list
           items:
             type: integer
       required:
