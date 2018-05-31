@@ -664,8 +664,15 @@ public class OpenApiGenerator {
             .addModifiers(Modifier.PRIVATE);
 
         if (p instanceof ArraySchema) {
-            fieldBuilder
-                .initializer("new $T<>()", HashSet.class);
+            ArraySchema arraySchema = (ArraySchema) p;
+
+            if ("list".equals(arraySchema.getFormat())) {
+                fieldBuilder
+                    .initializer("new $T<>()", ArrayList.class);
+            } else {
+                fieldBuilder
+                    .initializer("new $T<>()", HashSet.class);
+            }
         } else if (p instanceof StringSchema) {
             StringSchema stringTypeDeclaration = (StringSchema) p;
             if (stringTypeDeclaration.getEnum() != null) {
